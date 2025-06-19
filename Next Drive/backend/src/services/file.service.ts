@@ -1,7 +1,8 @@
+import { Types } from 'mongoose';
 import fileModel from '../Models/file.model'
 
 interface files{
-    owner: object,
+    owner: string,
     path: string,
     originalname: string,
     imageURL: string,
@@ -11,11 +12,11 @@ interface files{
 export const  createfile = async ({owner,path,originalname,imageURL,fileType}:files) => {
  if(!owner || !path || !originalname || !fileType) return
  const file = await fileModel.create({
-    owner,
+    owner: new Types.ObjectId(owner),
     path,
     originalname,
     imageURL,
-    fileType
- })
+    fileType,
+  });
  return file
 }

@@ -12,34 +12,27 @@ declare global {
     }
   }
 
-const middleware = async (request: Request, response: Response, next: NextFunction) => {
-    let accessToken:string | undefined
-    const authHeader= request.headers.authorization;
-    console.log(authHeader)
-    if(authHeader && authHeader.startsWith('Bearer')){
-        accessToken = authHeader.split(' ')[1];
-    }
-    if(!accessToken){
-         response.status(401).json({
-            message: 'Access Token required'
-        });
-        return
-    }
+const middleware = async (req: Request, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    res.status(401).json({ message: 'Access Token required' });
+    return;
+  }
 
+  const accessToken = authHeader.split(' ')[1];
+
+  try {
+    const user = jwt.verify(accessToken, process.env.SECRET_KEY || 'default');
+    req.user = user;
+    next();
+  } catch (err) {
     try {
-        let user
-        user = await jwt.verify(accessToken, process.env.SECRET_KEY || 'default')
-        if(!user){
-            const response = await client.getTokenInfo(accessToken);
-            const user = response
-        }
-        request.user = `${user}`;
-        next()
-    } catch (error) {
-         response.status(403).json({
-            message: 'Invalid or expired token',
-        });
-        return
+      const googleInfo = await client.getTokenInfo(accessToken);
+      req.user = googleInfo;
+      next();
+    } catch (err) {
+      res.status(403).json({ message: 'Invalid or expired token' });
     }
-}
+  }
+};
 export default middleware;

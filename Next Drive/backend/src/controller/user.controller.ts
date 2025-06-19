@@ -16,7 +16,6 @@ export const register = async (request: Request, response: any) => {
             success: false
         })
     }
-
     try {
         const existingUsers = await findUser({email})
         if(existingUsers){
@@ -24,9 +23,9 @@ export const register = async (request: Request, response: any) => {
                 message: "User already exists",
                 user: existingUsers,
                 success: false,
-        })}
-        const hashPassword = await userModel.hashpassword(password)
-        const user = await registerUser({name,email,picture,password:hashPassword})
+            })}
+            const hashPassword = await userModel.hashpassword(password)
+            const user = await registerUser({name,email,picture,password:hashPassword})
         if(!user){
             return response.status(500).json({
                 message: "Some Error occure",
@@ -40,6 +39,7 @@ export const register = async (request: Request, response: any) => {
             success: true,
         });
     } catch (error) {
+        console.error("Register Error:", error);
         return response.status(500).json({
             message: "Internal server error",
             success: false,
@@ -59,13 +59,13 @@ export const login = async (request: Request, response:any) => {
     try {
         const user = await findUser({email})
         if(!user){
-            return response.status(200).json({
+            return response.status(202).json({
                 message: "password or email is incorrect",
                 success: false,
         })}
         const isMatch = await user.comparePassword(password, user.password)
         if(!isMatch){
-            return response.status(200).json({
+            return response.status(202).json({
                 message: "password or email is incorrect",
                 success: false,
         })}

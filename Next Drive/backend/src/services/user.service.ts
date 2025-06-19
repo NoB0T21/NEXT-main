@@ -1,4 +1,4 @@
-import userModel from '../Models/user.model'
+import User  from '../Models/user.model'
 
 interface EmailParam {
     name:string,
@@ -8,17 +8,17 @@ interface EmailParam {
 }
 
 export const findUser =  async ({email}:{email:string}) => {
-  const user = await userModel.findOne({email})
+  const user = await User.findOne({email})
   if(!user)return null
   return user
 }
 
 export const registerUser = async ({ name, email,picture, password }: EmailParam) => {
-  const newUser = await userModel.create({
-      name,
-      email,
-      picture,
-      password,
-    });
-    return newUser;
+  const data = await User.create({
+    name,
+    email,
+    picture,
+    password,
+  });
+    return data;
   };

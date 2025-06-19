@@ -1,5 +1,6 @@
 'use client'
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 type User = {
     _id: string;
@@ -10,20 +11,33 @@ type User = {
 
   type AppContextType = {
     user: User;
-    setUser: React.Dispatch<React.SetStateAction<User>>;
   };
 
   const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppWrapper({children}:{children: React.ReactNode}){
     const [user, setUser] = useState<User>({
-        _id: '123',
-        name: 'Aryan123',
-        email: 'a@a.com',
-        picture: 'https://variety.com/wp-content/uploads/2023/05/spider-2.jpg?w=1000&h=563&crop=1&resize=681%2C383'
+        _id: '',
+        name: '',
+        email: '',
+        picture: ''
     })
+
+    useEffect(() => {
+    // Try to load user from cookie on first render
+    let userCookie = Cookies.get('user');
+    if(!userCookie)userCookie=localStorage.getItem('user')||''
+    if (userCookie) {
+      try {
+        const parsedUser: User = JSON.parse(userCookie);
+        setUser(parsedUser);
+      } catch (err) {
+        console.error('Error parsing user cookie', err);
+      }
+    }
+  }, [location.pathname]);
     return (
-        <AppContext.Provider value={{user, setUser}}>
+        <AppContext.Provider value={{user}}>
             {children}
         </AppContext.Provider>
     )

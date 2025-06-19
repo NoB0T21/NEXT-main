@@ -1,8 +1,8 @@
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
 import { Schema } from "mongoose";
 
 interface files extends Document{
-    owner: object,
+    owner: Types.ObjectId,
     createdAt: string,
     path: string,
     originalname: string,
@@ -13,11 +13,12 @@ interface files extends Document{
 const fileSchema: Schema <files> = new mongoose.Schema({
     owner:{
         type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
         required: true
     },
     createdAt:{
         type: String,
-        default: 'time'
+        default: () => new Date().toISOString(),
     },
     path:{
         type: String,
@@ -37,5 +38,6 @@ const fileSchema: Schema <files> = new mongoose.Schema({
 
 })
 
-const file = mongoose.model<files>('file',fileSchema);
+const file = mongoose.models.file || mongoose.model<files>('file', fileSchema);
+
 export default file

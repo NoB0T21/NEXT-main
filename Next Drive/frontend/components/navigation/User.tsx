@@ -5,11 +5,11 @@ const User = () => {
     const {user} = useAppContext()
     const {name,email, picture} = user
   return (
-    <div className=" flex h-12 gap-2 px-2 sm:p-0 sm:justify-center lg:justify-start items-center rounded-xl sm:rounded-full mt-1 mb-5 bg-purple-900 w-full lg:px-2">
+    <div className="flex sm:justify-center lg:justify-start items-center gap-2 bg-purple-900 mt-1 mb-5 sm:p-0 px-2 lg:px-2 rounded-xl sm:rounded-full w-full h-12">
         <div className="w-10 h-10">
-            <img src={picture} className=" rounded-full object-cover w-full h-full"/>
+            <img src={picture} className="rounded-full w-full h-full object-cover"/>
         </div>
-        <div className="flex sm:hidden lg:flex flex-col text-md font-light justify-center">
+        <div className="sm:hidden flex lg:flex flex-col justify-center font-light text-md">
           <p>{name}</p>
           <p className="text-sm">{email}</p>
         </div>

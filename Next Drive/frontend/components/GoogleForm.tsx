@@ -4,14 +4,12 @@ import axios from "axios"
 import { useState } from "react"
 import Toasts from "./toasts/Toasts";
 import { Google } from "./icon/Icons";
-import { useAppContext } from "@/context";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
 const GoogleForm = () => {
 
   const router=useRouter()
-  const {setUser} = useAppContext()
   const [formData, setFormData] = useState<{
           name?: string;
           email?: string;
@@ -31,7 +29,15 @@ const GoogleForm = () => {
         setTimeout(() => {
           setShowToast(false)
         }, 6000);
-        setUser(response.data?.user)
+        const raw = response.data.user;
+            const user = {
+            _id: raw._id,
+            name: raw.name,
+            email: raw.email,
+            picture: raw.picture
+            }
+        localStorage.setItem('user', JSON.stringify(user));
+        Cookies.set('user', JSON.stringify(user), { expires: 1 });
         router.push('/')
         return
       }
@@ -94,8 +100,8 @@ const GoogleForm = () => {
 
   return (
     <>
-    <div className="w-2/3 lg:w-1/2 mt-5">
-      <button onClick={()=>handleGoogleLogin()} className="bg-indigo-600 hover:bg-indigo-700 w-full p-2 rounded-md text-md font-semibold"><div className="w-full h-6 flex justify-center gap-2"><Google/>Google</div></button>
+    <div className="mt-5 w-2/3 lg:w-1/2">
+      <button onClick={()=>handleGoogleLogin()} className="bg-indigo-600 hover:bg-indigo-700 p-2 rounded-md w-full font-semibold text-md"><div className="flex justify-center gap-2 w-full h-6"><Google/>Google</div></button>
     </div>
     {showToast && <Toasts type={tostType==='warningMsg'?'warningMsg':'infoMsg'} msg={responseMsg}/>}
     </>

@@ -6,7 +6,6 @@ import { createfile } from "../services/file.service";
 export const uploadFile = async (request: Request, response: Response) => {
     const { file } = request;
     const { owner } = request.body;
-
     if (!file || !owner) {
         response.status(400).json({
             message: "Require all fields",
@@ -15,7 +14,6 @@ export const uploadFile = async (request: Request, response: Response) => {
         return
     }
 
-    console.log(owner)
 
     try {
         const files = file.originalname.split(" ").join("");
@@ -38,7 +36,7 @@ export const uploadFile = async (request: Request, response: Response) => {
         }
 
         const publicUrlData = await supabase.storage
-            .from("NoB0T")
+            .from("box")
             .getPublicUrl(`${uniqueFilename}`);
 
         const newFile = await createfile({

@@ -7,13 +7,15 @@ import { useAppContext } from '@/context'
 import Thumbnail from './Thumbnail'
 import { MAX_FILE_SIZE } from '@/utils'
 import Toasts from './toasts/Toasts'
-import { uploadFile } from '@/actions/file.actions'
+import Cookies from 'js-cookie'
+import { api } from '@/utils/api'
 
 interface Props{
   ownerId: string
 }
 
 const FileUpload = ({ownerId}:Props) => {
+  const token = Cookies.get("token") || "";
   const {user} = useAppContext()
   const {_id} = user
   const [files,setFiles] = useState<File[]>([])
@@ -30,12 +32,23 @@ const FileUpload = ({ownerId}:Props) => {
         }, 6000);
         return
       }
-      return uploadFile({file,ownerID:_id})
-      .then((uploadedFile) => {
-        if(uploadedFile){
+      const formData = new FormData();
+          formData.append("owner", _id);
+          formData.append("file", file);
+                  const response = await api.post(`${process.env.NEXT_PUBLIC_BASE_URL}/file/upload`,formData,{
+                      headers: {
+                          Authorization: `Bearer ${token}`,
+                      },
+                      withCredentials: true
+                  })
+                  if(response.status!==200)return false
+
+        if(response.status===200){
           setFiles((prevFiles)=>prevFiles.filter((f)=>f.name!==file.name))
         }
-      })
+        if(response.status!==200){
+          console.log('fail')
+        }
     })
     await Promise.all(uploadPromises)
   }, [_id])
@@ -48,17 +61,17 @@ const FileUpload = ({ownerId}:Props) => {
   const {getRootProps, getInputProps} = useDropzone({onDrop})
 
   return (
-    <div {...getRootProps()} className='cursor-pointer flex flex-col items-end'>
+    <div {...getRootProps()} className='flex flex-col items-end cursor-pointer'>
       <input {...getInputProps()} />
       <button className='bg-purple-800 w-20 h-8'> upload <input className='opacity-0 w-full h-full' type='file' name='file' placeholder='Upload'/></button>
       {files.length>0 && (
-        <ul className='absolute -bottom-1 right-0 m-5 flex flex-col gap-2 drop-shadow-white justify-center backdrop-blur-sm bg-[#f7f7f723] rounded-md w-65'>
-          <h4 className=' font-light py-1 px-2'>Uploding...</h4>
+        <ul className='right-0 -bottom-1 absolute flex flex-col justify-center gap-2 bg-[#f7f7f723] drop-shadow-white backdrop-blur-sm m-5 rounded-md w-65'>
+          <h4 className='px-2 py-1 font-light'>Uploding...</h4>
           {files.map((file, index)=>{
             const{type, extension} = getFileType(file.name)
             return(<li className='p-1' key={`${file.name}-${index}`}>
               <div className='flex justify-between items-center px-2'>
-                <div className='flex gap-2 justify-center items-center'>
+                <div className='flex justify-center items-center gap-2'>
                   <Thumbnail
                     type={type}
                     extension={extension}
