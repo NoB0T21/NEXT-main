@@ -2,35 +2,35 @@ export const getFileType = (filename: string) => {
     // Extract extension
     const parts = filename.split(".");
     if (parts.length < 2) {
-      return { type: "unknown", extension: "" };
+      return { type: "other", extension: "" };
     }
   
     const extension = parts.pop()?.toLowerCase() || "";
-  
     // Infer type based on common extensions
-    let type = "unknown";
-  
+    let type = "other";
+    
     if (["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"].includes(extension)) {
       type = "image";
     } else if (["mp4", "mkv", "avi", "mov", "wmv", "webm"].includes(extension)) {
       type = "video";
     } else if (["mp3", "wav", "ogg", "flac", "m4a"].includes(extension)) {
-      type = "audio";
+      type = "video";
     } else if (["pdf"].includes(extension)) {
       type = "document";
-    } else if (["doc", "docx", "odt", "rtf"].includes(extension)) {
+    } else if (["doc", "docx", "xls", "xlsx","txt","ppt", "pptx"].includes(extension)) {
       type = "document";
-    } else if (["xls", "xlsx", "csv"].includes(extension)) {
-      type = "spreadsheet";
-    } else if (["ppt", "pptx"].includes(extension)) {
-      type = "presentation";
-    } else if (["zip", "rar", "7z", "tar", "gz"].includes(extension)) {
-      type = "archive";
-    } else if (["txt", "md", "json", "xml", "yaml", "yml"].includes(extension)) {
-      type = "text";
-    }
+    } else if (["md", "json", "xml", "yaml", "yml", "csv","zip", "rar", "7z", "tar", "gz"].includes(extension)) {
+      type = "other";
+    } 
   
     return { type, extension };
   };
   
 export const convertFileToUrl = (file: File) => URL.createObjectURL(file)
+
+export const getFileSize = (filesize: number) => {
+  if(filesize < 1024) {return filesize+' Bytes'}
+  else if(filesize < 1024 * 1024) {const size = filesize/1024;return size.toFixed(1)+' KB'}
+  else if(filesize < 1024 * 1024 * 1024) {const size = filesize/(1024*1024);return size.toFixed(1)+' MB'}
+  else {const size = filesize/(1024*1024*1024);return size.toFixed(1)+' GB'}
+}

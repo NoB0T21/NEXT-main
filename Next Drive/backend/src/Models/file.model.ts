@@ -7,7 +7,8 @@ interface files extends Document{
     path: string,
     originalname: string,
     imageURL: string,
-    fileType: string
+    fileType: string,
+    fileSize: number
 }
 
 const fileSchema: Schema <files> = new mongoose.Schema({
@@ -35,6 +36,10 @@ const fileSchema: Schema <files> = new mongoose.Schema({
         type: String,
         required: true
     },
+    fileSize:{
+        type: Number,
+        required: true
+    }
 
 })
 

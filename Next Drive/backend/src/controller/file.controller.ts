@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import uuid from "uuid4";
 import supabase from "../Db/supabase";
-import { createfile } from "../services/file.service";
+import { createfile, getfiles, renamefiles } from "../services/file.service";
 
 export const uploadFile = async (request: Request, response: Response) => {
     const { file } = request;
@@ -45,6 +45,7 @@ export const uploadFile = async (request: Request, response: Response) => {
             originalname: file?.originalname || "",
             imageURL: publicUrlData.data.publicUrl || "",
             fileType: file?.mimetype || "",
+            fileSize: file.size
         });
 
         response.status(200).json({
@@ -61,3 +62,54 @@ export const uploadFile = async (request: Request, response: Response) => {
         return
     }
 };
+
+export const getfile = async (request: Request, response: any) => {
+    const id = request.user._id
+    if(!id){
+        response.status(400).json({
+            message: "Require all fields",
+            success: false,
+        });
+        return
+    }
+
+    const file = await getfiles({id})
+    if(!file){
+        response.status(400).json({
+            message: "Require all fields",
+            success: false,
+        });
+        return
+    }
+    return response.status(200).json({
+        message: "File Present",
+        file,
+        success: true,
+    });
+}
+
+export const renamefile = async (request: Request, response: any) => {
+    const id = request.user._id
+    const originalname = request.body.name
+    if(!id){
+        response.status(400).json({
+            message: "Require all fields",
+            success: false,
+        });
+        return
+    }
+
+    const file = await renamefiles({id,originalname})
+    if(!file){
+        response.status(400).json({
+            message: "Require all fields",
+            success: false,
+        });
+        return
+    }
+    return response.status(200).json({
+        message: "File Present",
+        file,
+        success: true,
+    });
+}

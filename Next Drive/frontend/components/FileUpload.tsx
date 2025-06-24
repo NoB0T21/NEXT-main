@@ -19,6 +19,8 @@ const FileUpload = ({ownerId}:Props) => {
   const {user} = useAppContext()
   const {_id} = user
   const [files,setFiles] = useState<File[]>([])
+  const [message, setMessage] = useState('warningMsg')
+  const [tostType,setTostType] = useState('')
   const [showToast,setShowToast] = useState(false)
     
   const onDrop = useCallback( async (acceptedFiles: File[]) => {
@@ -26,6 +28,8 @@ const FileUpload = ({ownerId}:Props) => {
     const uploadPromises = acceptedFiles.map(async (file) => {
       if(file.size > MAX_FILE_SIZE){
         setFiles((prevFiles)=>prevFiles.filter((f)=>f.name!==file.name))
+        setTostType('warningMsg')
+          setMessage('Max size is 100MB')
         setShowToast(true)
         setTimeout(() => {
           setShowToast(false)
@@ -41,13 +45,23 @@ const FileUpload = ({ownerId}:Props) => {
                       },
                       withCredentials: true
                   })
-                  if(response.status!==200)return false
 
         if(response.status===200){
           setFiles((prevFiles)=>prevFiles.filter((f)=>f.name!==file.name))
+          setTostType('successMsg')
+          setMessage('File uploaded')
+          setShowToast(true)
+        setTimeout(() => {
+          setShowToast(false)
+        }, 6000);
         }
         if(response.status!==200){
-          console.log('fail')
+          setTostType('erreoMsg')
+          setMessage('File uploaded failed')
+          setShowToast(true)
+            setTimeout(() => {
+          setShowToast(false)
+        }, 6000);
         }
     })
     await Promise.all(uploadPromises)
@@ -75,7 +89,7 @@ const FileUpload = ({ownerId}:Props) => {
                   <Thumbnail
                     type={type}
                     extension={extension}
-                    url={convertFileToUrl(file)}
+                    url={type==='image'? convertFileToUrl(file) : '/'}
                   />
                   <div className='text-sm'>
                     {file.name}
@@ -88,7 +102,7 @@ const FileUpload = ({ownerId}:Props) => {
           })}
         </ul>
       )}
-      {showToast && <Toasts type={'warningMsg'} msg={'Max size is 100MB'}/>}
+      {showToast && <Toasts type={tostType==='warningMsg'||tostType==='erreoMsg'?(tostType==='erreoMsg'?'erreoMsg':'warningMsg'):'successMsg'} msg={message}/>}
     </div>
   )
 }

@@ -7,7 +7,7 @@ const User = () => {
   return (
     <div className="flex sm:justify-center lg:justify-start items-center gap-2 bg-purple-900 mt-1 mb-5 sm:p-0 px-2 lg:px-2 rounded-xl sm:rounded-full w-full h-12">
         <div className="w-10 h-10">
-            <img src={picture} className="rounded-full w-full h-full object-cover"/>
+            <img src={picture || '/Images/Logo.png'} className="rounded-full w-full h-full object-cover"/>
         </div>
         <div className="sm:hidden flex lg:flex flex-col justify-center font-light text-md">
           <p>{name}</p>

@@ -24,3 +24,22 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.remove-scrollbar::-webkit-scrollbar{
+  width: 0px;
+  height: 0px;
+  border-radius: 0px;
+}
+
+.remove-scrollbar::-webkit-scrollbar-track{
+  background: transparent;
+}
+
+.remove-scrollbar::-webkit-scrollbar-thumb{
+  background: transparent;
+  border-radius: 0px;
+}
+
+.remove-scrollbar::-webkit-scrollbar-thumb:hover{
+  background: transparent;
+}

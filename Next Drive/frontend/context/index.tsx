@@ -1,6 +1,7 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { usePathname } from "next/navigation";
 
 type User = {
     _id: string;
@@ -22,6 +23,7 @@ export function AppWrapper({children}:{children: React.ReactNode}){
         email: '',
         picture: ''
     })
+    const path = usePathname();
 
     useEffect(() => {
     // Try to load user from cookie on first render
@@ -35,7 +37,7 @@ export function AppWrapper({children}:{children: React.ReactNode}){
         console.error('Error parsing user cookie', err);
       }
     }
-  }, [location.pathname]);
+  }, [path]);
     return (
         <AppContext.Provider value={{user}}>
             {children}
