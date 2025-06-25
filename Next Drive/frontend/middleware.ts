@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import Cookies from "js-cookie";
+import ClientLocalStorage from './clientStorage';
 
 export function middleware (request: NextRequest){
     const path = request.nextUrl.pathname;
     const isPublicRout = path === '/sign-up' || path === '/sign-in'
 
-    const token = request.cookies.get('token')?.value;
+    let token = request.cookies.get('token')?.value;
+    token = ClientLocalStorage()||undefined
+
 
     if(!token && !isPublicRout){
         const res = NextResponse.redirect(new URL('/sign-up',request.url))
