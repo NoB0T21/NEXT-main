@@ -1,5 +1,6 @@
 export interface SearchParamProps{
     params?: Promise<SegmentParams>;
+    search: { [key: string]: string | string[] | undefined };
     searchParams: Promise<{[key: string]:string | string[] | undefined}>
 }
 
@@ -12,4 +13,5 @@ export interface files{
   fileType: string
   createdAt: string,
   fileSize: number,
+  shareuser: string[]
 }

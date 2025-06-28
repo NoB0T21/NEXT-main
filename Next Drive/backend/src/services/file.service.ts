@@ -1,6 +1,9 @@
 import { Types } from 'mongoose';
 import fileModel from '../Models/file.model'
 
+function escapeRegExp(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 interface files{
     owner: string,
     path: string,
@@ -23,7 +26,7 @@ export const  createfile = async ({owner,path,originalname,imageURL,fileType,fil
  return file
 }
 
-export const  getfiles = async ({id}:{id: string}) => {
+export const  getfiles = async ({id}:{id: any}) => {
  if(!id) return
  const file = await fileModel.find({owner: id});
  return file
@@ -34,3 +37,41 @@ export const  renamefiles = async ({id,originalname}:{id: string, originalname: 
  const file = await fileModel.findOneAndUpdate({_id: id},{originalname});
  return file
 }
+
+export const  sharefiles = async ({id,userIs}:{id: string, userIs: string[]}) => {
+ if(!id) return
+ const file = await fileModel.findOneAndUpdate({_id: id},{$addToSet:{shareuser:userIs}}, { new: true });
+ return file
+}
+
+export const  updatesharefiles = async ({id,shareuser}:{id: string, shareuser: string[]}) => {
+ if(!id) return
+ const file = await fileModel.findOneAndUpdate({_id: id},{$set:{shareuser:shareuser}}, { new: true });
+ console.log(shareuser)
+ return file
+}
+
+export const  deletefiles = async ({id}:{id: string}) => {
+ if(!id) return
+ const file = await fileModel.findOneAndDelete({_id: id});
+ return file
+}
+
+export const  getfiless = async ({id}:{id: any}) => {
+ if(!id) return
+ const file = await fileModel.findOne({_id: id});
+ return file
+}
+
+export const getfileBySearch = async ({ query }: { query: string | RegExp }) => {
+  if (!query) return [];
+
+   const regex = typeof query === 'string'
+    ? new RegExp(escapeRegExp(query.trim()), 'i')
+    : query;
+
+  const file = await fileModel.find({
+    originalname: { $regex: regex },
+  });
+  return file;
+};

@@ -9,6 +9,7 @@ import { MAX_FILE_SIZE } from '@/utils'
 import Toasts from './toasts/Toasts'
 import Cookies from 'js-cookie'
 import { api } from '@/utils/api'
+import { revalidateFilesPage } from '@/utils/actions/serverAction'
 
 interface Props{
   ownerId: string
@@ -51,20 +52,21 @@ const FileUpload = ({ownerId}:Props) => {
           setTostType('successMsg')
           setMessage('File uploaded')
           setShowToast(true)
-        setTimeout(() => {
-          setShowToast(false)
-        }, 6000);
+          setTimeout(() => {
+            setShowToast(false)
+          }, 6000);
         }
         if(response.status!==200){
           setTostType('erreoMsg')
           setMessage('File uploaded failed')
           setShowToast(true)
-            setTimeout(() => {
-          setShowToast(false)
-        }, 6000);
+          setTimeout(() => {
+            setShowToast(false)
+          }, 6000);
         }
-    })
-    await Promise.all(uploadPromises)
+      })
+      await Promise.all(uploadPromises)
+      await revalidateFilesPage()
   }, [_id])
 
   const handleRemoveFile = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, fileName: string) => {

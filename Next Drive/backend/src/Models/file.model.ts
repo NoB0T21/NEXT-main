@@ -1,5 +1,6 @@
 import mongoose, { Document, Types } from "mongoose";
 import { Schema } from "mongoose";
+import { ref } from "process";
 
 interface files extends Document{
     owner: Types.ObjectId,
@@ -8,7 +9,8 @@ interface files extends Document{
     originalname: string,
     imageURL: string,
     fileType: string,
-    fileSize: number
+    fileSize: number,
+    shareuser: string[]
 }
 
 const fileSchema: Schema <files> = new mongoose.Schema({
@@ -19,7 +21,13 @@ const fileSchema: Schema <files> = new mongoose.Schema({
     },
     createdAt:{
         type: String,
-        default: () => new Date().toISOString(),
+        default: () => {
+    const now = new Date();
+    // Convert UTC to IST (UTC + 5:30)
+    const istOffset = 5.5 * 60 * 60 * 1000; // 5.5 hours in milliseconds
+    const istTime = new Date(now.getTime() + istOffset);
+    return istTime.toISOString();
+  },
     },
     path:{
         type: String,
@@ -39,7 +47,11 @@ const fileSchema: Schema <files> = new mongoose.Schema({
     fileSize:{
         type: Number,
         required: true
-    }
+    },
+    shareuser:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref: "user"
+    }]
 
 })
 
