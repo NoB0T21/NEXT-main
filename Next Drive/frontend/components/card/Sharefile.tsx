@@ -31,8 +31,9 @@ const Sharefile = ({file,onInputChange, onRemove,shareUserid}:{file:files,onInpu
             </div>
             <div className='flex flex-wrap gap-3 truncate'>
                 {shareUserid.length===0?<>this file is not share with anyone</>:shareUserid.map((Ids)=>(<>
-                    <div className='relative flex justify-start items-center bg-zinc-800 size-15 truncate'>
-                        <img className='rounded-full' src={Ids.picture} alt="shareuser" />
+                    <div className='relative flex flex-col justify-center items-start gap-2 bg-zinc-800 w-16 h-18 truncate'>
+                        <img className='rounded-full size-15' src={Ids.picture} alt="shareuser" />
+                        <div className='flex justify-center w-full text-xs truncate'>{Ids.name}</div>
                         <p onClick={() => onRemove(Ids._id)} className='-top-2 right-0 absolute'>x</p>
                     </div>
                 </>))}

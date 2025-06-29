@@ -29,9 +29,6 @@ const fileDropdown = ({file}:{file: files}) => {
   const [shareUserid,setShareUserid] = useState<UsersIDs[]>([])
   const [name,setName] = useState('')
 
-
-
-
   useEffect (()=>{
     const fetchUsers = async () => {
     const usersID = file.shareuser;
@@ -89,6 +86,7 @@ const fileDropdown = ({file}:{file: files}) => {
       withCredentials: true
     })
     await revalidateShareTag()
+    setShareUser([])
   }
   const handleRemoveUser=async(userId:string) => {
     const updatedEmails = file.shareuser.filter((e) => e !== userId);

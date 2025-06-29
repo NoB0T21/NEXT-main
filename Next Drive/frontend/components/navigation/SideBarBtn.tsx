@@ -12,7 +12,7 @@ const SideBarBtn = ({pathname,name}:{pathname: string, name: string}) => {
             {name==='Dashboard' && (path==='/'?<DashboardFill/>:<Dashboard/>)}
             {name==='Documents' && (path===pathname?<DocumentsFill/>:<Documents/>)}
             {name==='Images' && (path===pathname?<ImagesFill/>:<Images/>)}
-            {name==='Medias' && (path===pathname?<MediaFill/>:<Media/>)}
+            {name==='Videos' && (path===pathname?<MediaFill/>:<Media/>)}
             {name==='Others' && (path===pathname?<OtherFill/>:<Other/>)}
         </div>
         <div className="sm:hidden flex lg:flex">{name}</div>

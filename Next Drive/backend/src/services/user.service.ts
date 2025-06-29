@@ -21,7 +21,7 @@ export const findUsers =  async ({shareuser}:{shareuser:string[]}): Promise<any[
   return user
 }
 
-export const findUsersByid =  async ({shareuser}:{shareuser:string}): Promise<any> => {
+export const findUsersByid =  async ({shareuser}:{shareuser:any}): Promise<any> => {
   const user = await User.findOne({ _id:shareuser });
   return user
 }

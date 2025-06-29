@@ -28,7 +28,10 @@ export const  createfile = async ({owner,path,originalname,imageURL,fileType,fil
 
 export const  getfiles = async ({id}:{id: any}) => {
  if(!id) return
- const file = await fileModel.find({owner: id});
+ const file = await fileModel.find({$or: [
+    { owner: id },
+    { shareuser: id }
+  ]});
  return file
 }
 

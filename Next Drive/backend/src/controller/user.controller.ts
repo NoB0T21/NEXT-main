@@ -3,6 +3,7 @@ import { findUser, findUsersByid, getUsersByid, registerUser } from "../services
 import userModel  from '../Models/user.model'
 
 interface User {
+    _id:string,
     name:string,
     email:string,
     password:string
@@ -84,8 +85,38 @@ export const login = async (request: Request, response:any) => {
     }
 }
 
+export const getUser = async (request: Request, response:any) => {
+    const email = request.user.email
+    if(!email){
+        return response.status(400).json({
+        message: 'Require all fields',
+        success: false
+    })}
+    const user = await findUser({email})
+    const userid = user?._id||''
+    try {
+        const user = await findUsersByid({shareuser:userid})
+        if(!user){
+            return response.status(200).json({
+                message: "password or email is incorrect",
+                success: false,
+        })}
+        return response.status(200).json({
+            message: "IDs",
+            file: user,
+            success: true,
+        })
+    } catch (error) {
+        return response.status(500).json({
+            message: "Internal server error",
+            success: false,
+          });
+    }
+}
+
 export const getuserbyid = async (request: Request, response:any) => {
     const userid = request.params.id
+    
     if(!userid){
         return response.status(400).json({
             message: 'Require all fields',

@@ -34,3 +34,9 @@ export const getFileSize = (filesize: number) => {
   else if(filesize < 1024 * 1024 * 1024) {const size = filesize/(1024*1024);return size.toFixed(1)+' MB'}
   else {const size = filesize/(1024*1024*1024);return size.toFixed(1)+' GB'}
 }
+
+export const getFileSizeinPercentage = (filesize: number) => {
+  const maxSize = 500 * 1024 * 1024; // 500 MB in bytes
+  const percentage = ((filesize / maxSize) * 100);
+  return Math.min(percentage, 75).toFixed(1);
+}

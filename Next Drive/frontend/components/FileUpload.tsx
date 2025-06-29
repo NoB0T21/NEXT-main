@@ -11,11 +11,7 @@ import Cookies from 'js-cookie'
 import { api } from '@/utils/api'
 import { revalidateFilesPage } from '@/utils/actions/serverAction'
 
-interface Props{
-  ownerId: string
-}
-
-const FileUpload = ({ownerId}:Props) => {
+const FileUpload = () => {
   const token = Cookies.get("token") || "";
   const {user} = useAppContext()
   const {_id} = user

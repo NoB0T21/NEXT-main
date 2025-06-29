@@ -5,7 +5,7 @@ import Logoutbtn from './Logoutbtn'
 
 const Header = () => {
   return (
-    <header className='flex w-full justify-between items-center h-20 px-2'>
+    <header className='flex justify-between items-center px-2 w-full h-20'>
         <Search/>
       <div className='flex items-center'>
         <FileUpload/>

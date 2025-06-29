@@ -48,3 +48,23 @@ export const SearchFiles = async ({token,query}:{token:string,query:string}) => 
     })
     return files.data.file
 }
+
+export const SortFiles = async ({token,query}:{token:string,query:string}) => {
+    const files = await api.get(`/file/getfile?sort=${query}`,{
+        headers:{
+            Authorization:`Bearer ${token}`,
+        },
+        withCredentials:true
+    })
+    return files.data.file
+}
+
+export const getuser = async ({token}:{token:string}) => {
+    const files = await api.get(`/user/getuser`,{
+        headers:{
+            Authorization:`Bearer ${token}`,
+        },
+        withCredentials:true
+    })
+    return files.data.file
+}

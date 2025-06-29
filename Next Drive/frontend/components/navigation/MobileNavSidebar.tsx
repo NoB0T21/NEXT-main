@@ -4,11 +4,8 @@ import User from './User'
 import SideBarBtn from "./SideBarBtn"
 import FileUpload from '../FileUpload'
 import Logoutbtn from './Logoutbtn'
-import { useAppContext } from '@/context'
 
-const MobileNavSidebar = () => {  
-    const {user} = useAppContext()
-    const{_id} = user
+const MobileNavSidebar = () => {
     const [show,setShow] = useState(false)
   return (
     <>
@@ -24,7 +21,7 @@ const MobileNavSidebar = () => {
                 <div className="w-full h-10"><SideBarBtn pathname={'/Media'} name={'Medias'}/></div>
                 <div className="w-full h-10"><SideBarBtn pathname={'/Other'} name={'Others'}/></div>
             </div>
-            <FileUpload ownerId={_id}/>
+            <FileUpload/>
             <Logoutbtn/>
         </div>
       </div>

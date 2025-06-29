@@ -67,7 +67,10 @@ export const uploadFile = async (request: Request, response: Response) => {
 export const getfile = async (request: Request, response: any) => {
     const email = request.user.email
     let q = request.query.q || ''
+    let sort =request.query.sort || ''
+    let sortedFiles
     let query = '';
+    console.log(sort)
     if (typeof q === 'string') {
         query = q;
     } else if (Array.isArray(q) && typeof q[0] === 'string') {
@@ -93,7 +96,24 @@ export const getfile = async (request: Request, response: any) => {
         const user = await findUser({email})
         const id = user?._id
     
-        const file = await getfiles({id})
+        const file:any = await getfiles({id})
+        if (sort==='A-Zasc') {
+            sortedFiles = file.sort((a:any, b:any) => 
+                a.originalname.localeCompare(b.originalname)
+            );
+        }else if(sort==='A-Zdesc') {
+            sortedFiles = file.sort((a:any, b:any) => 
+                b.originalname.localeCompare(a.originalname)
+            );
+        }else if(sort==='Date-desc') {
+            sortedFiles = file.sort((a:any, b:any) =>
+                new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            );
+        } else {
+            sortedFiles = file.sort((a:any, b:any) =>
+                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+        }
         if(!file){
             response.status(400).json({
                 message: "Require all fields",
@@ -103,7 +123,7 @@ export const getfile = async (request: Request, response: any) => {
         }
         return response.status(200).json({
             message: "File Present",
-            file,
+            file:sortedFiles,
             success: true,
         });
     }
