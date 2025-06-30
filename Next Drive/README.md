@@ -1,7 +1,7 @@
 # 📦 ByteBox - Your Cloud, Your Space
 
 <p align="center">
-  <img src="./Next%20Drive/frontend/public/Images/Logo.png" alt="ByteBox Logo" width="120"/>
+  <img src="./frontend/public/Images/Logo.png" alt="ByteBox Logo" width="120"/>
 </p>
 
 **ByteBox** is a powerful, modern, and responsive cloud storage web app built for seamless file management. From storing and sharing files of any type to exploring upload details and sorting intelligently — ByteBox does it all with style and simplicity.
