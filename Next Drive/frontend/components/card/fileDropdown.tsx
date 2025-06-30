@@ -129,7 +129,7 @@ const fileDropdown = ({file}:{file: files}) => {
                 <div onClick={()=>{setShowDiv(false)}}>x</div>
               </div>
             {actionDropdown.map((items)=>(
-              <div className="flex flex-col gap-3" onClick={()=>{if(items.lable!=='Download')setShowTypeDiv(false);setTypeDiv(items.lable)}} ><Items key={items.value} lable={items.lable} url={file.imageURL} file={file}/></div>
+              <div key={items.value} className="flex flex-col gap-3" onClick={()=>{if(items.lable!=='Download')setShowTypeDiv(false);setTypeDiv(items.lable)}} ><Items key={items.value} lable={items.lable} url={file.imageURL} file={file}/></div>
             ))}</>:<>
               <div className="flex justify-between gap-2">
                 <div className='flex gap-4 mb-3 w-full font-semibold text-[1.2rem] truncate'>

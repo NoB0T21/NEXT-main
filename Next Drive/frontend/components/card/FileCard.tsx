@@ -5,6 +5,7 @@ import FileDropdown from './fileDropdown'
 import { FileShareee, SharedFile } from '../icon/Icons'
 import { api } from '@/utils/api'
 import { cookies, } from 'next/headers';
+import Image from 'next/image'
 
 interface User {
     _id:string,
@@ -27,7 +28,7 @@ const FileCard = async ({file,types,extrnsion,userId} : {file:files, types: stri
   return (
     <div className='flex flex-col gap-6 bg-[#0000002c] p-5 rounded-md cursor-pointer'>
       <div className='flex justify-between'>
-          {types==='image'?<img src={file.imageURL} alt='prev' className='rounded-full w-16 h-16 object-cover' />:<FileLogo type={extrnsion} extension={types}/>}
+          {types==='image'?<Image width={100} height={100} src={file.imageURL} alt='prev' className='rounded-full w-16 h-16 object-cover' />:<FileLogo type={extrnsion} extension={types}/>}
           <div className='flex flex-col justify-between items-center h-full font-light text-sm'>
               <FileDropdown file={file}/>
               <div>{fileSize}</div>

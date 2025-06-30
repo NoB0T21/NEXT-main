@@ -21,7 +21,7 @@ export default async function Home() {
       <div className="sm:col-span-1 row-span-1 bg-purple-900 rounded-2xl">
         <AvailableStorage percentage={percentage} size={sizes}/>
       </div>
-      <div className="sm:col-span-1 row-span-2 sm:row-span-2">
+      <div className="sm:col-span-1 row-span-2 sm:row-span-2 overflow-auto scrollbar">
         <TypeFile file={file}/>
       </div>
       <div className="sm:col-span-2 row-span-3 sm:row-span-3 overflow-auto scrollbar">

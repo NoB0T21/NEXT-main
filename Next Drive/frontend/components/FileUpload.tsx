@@ -36,12 +36,12 @@ const FileUpload = () => {
       const formData = new FormData();
           formData.append("owner", _id);
           formData.append("file", file);
-                  const response = await api.post(`${process.env.NEXT_PUBLIC_BASE_URL}/file/upload`,formData,{
-                      headers: {
-                          Authorization: `Bearer ${token}`,
-                      },
-                      withCredentials: true
-                  })
+      const response = await api.post(`${process.env.NEXT_PUBLIC_BASE_URL}/file/upload`,formData,{
+          headers: {
+              Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true
+      })
 
         if(response.status===200){
           setFiles((prevFiles)=>prevFiles.filter((f)=>f.name!==file.name))
@@ -75,7 +75,7 @@ const FileUpload = () => {
   return (
     <div {...getRootProps()} className='flex flex-col items-end cursor-pointer'>
       <input {...getInputProps()} />
-      <button className='bg-purple-800 w-20 h-8'> upload <input className='opacity-0 w-full h-full' type='file' name='file' placeholder='Upload'/></button>
+      <button className='relative flex justify-center items-center bg-purple-800 rounded-md w-20 h-8'> upload <input className='left-0 absolute opacity-0 w-full h-full' type='file' name='file' placeholder='Upload'/></button>
       {files.length>0 && (
         <ul className='right-0 -bottom-1 absolute flex flex-col justify-center gap-2 bg-[#f7f7f723] drop-shadow-white backdrop-blur-sm m-5 rounded-md w-65'>
           <h4 className='px-2 py-1 font-light'>Uploding...</h4>

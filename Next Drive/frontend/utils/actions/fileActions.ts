@@ -1,7 +1,5 @@
 
-import axios from "axios"
 import { api } from "../api"
-import { redirect } from "next/navigation"
 
 export const getFiles = async ({ token }: { token: string }) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/file/getfile`, {
@@ -15,9 +13,6 @@ export const getFiles = async ({ token }: { token: string }) => {
             },
     })
     const files = await res.json()
-    if(files.message==='Invalid or expired token'){
-       redirect('/sign-in');
-    }
     return files.file
 }
 
@@ -33,9 +28,6 @@ export const getShareuser = async ({ token }: { token: string}) => {
             },
     })
     const files = await res.json()
-    if(files.message==='Invalid or expired token'){
-       redirect('/sign-in');
-    }
     return files.file
 }
 

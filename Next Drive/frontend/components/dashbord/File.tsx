@@ -6,6 +6,7 @@ import { api } from '@/utils/api'
 import { cookies, } from 'next/headers';
 import FileLogo from '../FileLogo';
 import FileDropdown from '../card/fileDropdown'
+import Image from 'next/image';
 
 interface User {
     _id:string,
@@ -28,7 +29,7 @@ const File = async ({file,types,extrnsion,userId} : {file:files, types: string,e
     <div className='flex flex-col gap-6 bg-[#0000002c] p-5 rounded-md w-full cursor-pointer'>
       <div className='flex justify-between items-center gap-5 h-2/3'>
           <div className='flex items-center gap-5 w-3/4'>
-            {types==='image'?<img src={file.imageURL} alt='prev' className='rounded-full w-16 h-16 object-cover' />:<FileLogo type={extrnsion} extension={types}/>}
+            {types==='image'?<Image width={100} height={100} src={file.imageURL} alt='prev' className='rounded-full w-16 h-16 object-cover' />:<FileLogo type={extrnsion} extension={types}/>}
             <p className='text-2xl truncate'>{file.originalname}</p>
           </div>
           <div className='flex flex-col justify-between items-center h-full font-light text-sm'>

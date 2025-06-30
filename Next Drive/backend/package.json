@@ -7,7 +7,7 @@
     "test": "jest",
     "client": " npm run dev --prefix ../frontend",
     "start": "dotenv -- nodemon --onsuccess npm run build",
-    "dev": "concurrently \"npm run client\" \"npm start\"",
+    "dev": "dotenv -- nodemon --onsuccess npm run build",
     "build": "tsc"
   },
   "author": "Aryan Gawade (NoB0T)",

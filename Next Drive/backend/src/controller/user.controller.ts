@@ -1,6 +1,12 @@
 import { Request } from "express"
 import { findUser, findUsersByid, getUsersByid, registerUser } from "../services/user.service"
+import {OAuth2Client} from 'google-auth-library'
 import userModel  from '../Models/user.model'
+import jwt from 'jsonwebtoken'
+import uuid4 from "uuid4"
+import supabase from "../Db/supabase"
+
+const client = new OAuth2Client(process.env.GOOGLE_ID)
 
 interface User {
     _id:string,
@@ -10,7 +16,9 @@ interface User {
 }
 
 export const register = async (request: Request, response: any) => {
-    const {name, email,picture, password} = request.body
+    const file = request.file as Express.Multer.File;
+    const {name, email, password} = request.body
+    console.log(password)
     if(!name||!email||!password){
         return response.status(400).json({
             message: 'Require all fields',
@@ -25,8 +33,33 @@ export const register = async (request: Request, response: any) => {
                 user: existingUsers,
                 success: false,
             })}
-            const hashPassword = await userModel.hashpassword(password)
-            const user = await registerUser({name,email,picture,password:hashPassword})
+
+        const files = file?.originalname.split(" ").join("");
+        const uniqueFilename = `${uuid4()}-${files}`;
+        const { data, error } = await supabase.storage
+            .from("box")
+            .upload(uniqueFilename, file?.buffer, {
+                contentType: file?.mimetype,
+                cacheControl: "3600",
+                upsert: false,
+            });
+        if (error) {
+            response.status(500).json({
+                message: "Server error",
+                success: false,
+            });
+            return
+        }
+        const publicUrlData = await supabase.storage
+            .from("box")
+            .getPublicUrl(`${uniqueFilename}`);
+
+        const hashPassword = await userModel.hashpassword(password)
+        const user = await registerUser({
+            name,
+            email,
+            picture:publicUrlData.data.publicUrl || "",
+            password:hashPassword})
         if(!user){
             return response.status(500).json({
                 message: "Some Error occure",
@@ -83,6 +116,48 @@ export const login = async (request: Request, response:any) => {
             success: false,
           });
     }
+}
+
+export const valid = async (req: Request, res:any) => {
+    const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        res.status(401).json({ message: 'Access Token required' });
+        return;
+      }
+    
+      const accessToken = authHeader.split(' ')[1];
+      try {
+        const user = jwt.verify(accessToken, process.env.SECRET_KEY || 'default');
+        if(!user){
+            return res.status(200).json({
+                message: "not verified",
+                success: false,
+            })
+        }
+        return res.status(200).json({
+            message: "verified",
+            success: true,
+        })
+      } catch (err) {
+        try {
+          const googleInfo = await client.getTokenInfo(accessToken);
+          if(!googleInfo){
+            return res.status(200).json({
+                message: "not verified",
+                success: false,
+            })
+        }
+        return res.status(200).json({
+            message: "verified",
+            success: true,
+        })
+        } catch (err) {
+           return res.status(200).json({
+                message: "not verified",
+                success: false,
+            })
+        }
+      }
 }
 
 export const getUser = async (request: Request, response:any) => {

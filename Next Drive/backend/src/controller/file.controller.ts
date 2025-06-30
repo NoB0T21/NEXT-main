@@ -66,11 +66,10 @@ export const uploadFile = async (request: Request, response: Response) => {
 
 export const getfile = async (request: Request, response: any) => {
     const email = request.user.email
-    let q = request.query.q || ''
-    let sort =request.query.sort || ''
+    let q = typeof request.query?.q === 'string' ? request.query.q : '';
+    let sort =typeof request.query?.sort === 'string' ? request.query.sort : '';
     let sortedFiles
     let query = '';
-    console.log(sort)
     if (typeof q === 'string') {
         query = q;
     } else if (Array.isArray(q) && typeof q[0] === 'string') {
@@ -78,8 +77,12 @@ export const getfile = async (request: Request, response: any) => {
     } else {
         query = ''; 
     }
+
+    const user = await findUser({email})
+    const id = user?._id
+
     if(query){
-        const file = await getfileBySearch({query:query})
+        const file = await getfileBySearch({query:query,id:id})
         return response.status(200).json({
             message: "File Present",
             file,
@@ -93,8 +96,6 @@ export const getfile = async (request: Request, response: any) => {
             });
             return
         }
-        const user = await findUser({email})
-        const id = user?._id
     
         const file:any = await getfiles({id})
         if (sort==='A-Zasc') {

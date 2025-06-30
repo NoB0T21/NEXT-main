@@ -66,7 +66,7 @@ export const  getfiless = async ({id}:{id: any}) => {
  return file
 }
 
-export const getfileBySearch = async ({ query }: { query: string | RegExp }) => {
+export const getfileBySearch = async ({ query,id }: { query: string | RegExp ,id: any }) => {
   if (!query) return [];
 
    const regex = typeof query === 'string'
@@ -74,7 +74,17 @@ export const getfileBySearch = async ({ query }: { query: string | RegExp }) => 
     : query;
 
   const file = await fileModel.find({
-    originalname: { $regex: regex },
-  });
+     $and: [
+    {
+      $or: [
+        { owner: id },
+        { shareuser: id }
+      ]
+    },
+    {
+      originalname: { $regex: regex }
+    }
+  ]
+  })
   return file;
 };

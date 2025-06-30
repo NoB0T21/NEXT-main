@@ -58,7 +58,7 @@ const Search = () => {
           const {type,extension} = getFileType(file.originalname)
           const filesize = getFileSize(file.fileSize)
           return(<>
-          <div onClick={()=>{handleSubmit2({types:type,searchs:file.originalname})}} className='flex gap-5 bg-zinc-600 p-2 rounded-xl'>
+          <div key={file._id} onClick={()=>{handleSubmit2({types:type,searchs:file.originalname})}} className='flex gap-5 bg-zinc-600 p-2 rounded-xl'>
             <div className='w-15 h-full'>
               <Thumbnail type={type} extension={extension} url={file.imageURL}/>
             </div>

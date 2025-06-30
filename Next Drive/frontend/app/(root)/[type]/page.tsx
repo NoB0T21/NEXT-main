@@ -54,9 +54,7 @@ const page = async ({params,searchParams}:SearchParamProps) => {
           {file.map((f: files)=>{
             const {type,extension} = getFileType(f.originalname)
             return(type===types.toLowerCase().slice(0,-1) &&
-              <>
                 <FileCard key={f._id} file={f} types={type} extrnsion={extension} userId={user._id}/>
-              </>
             )
           })}
           </div>:<p>No files</p> }

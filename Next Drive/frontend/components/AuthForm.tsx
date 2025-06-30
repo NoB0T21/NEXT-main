@@ -10,6 +10,10 @@ import Toasts from "./toasts/Toasts";
 import GoogleForm from "./GoogleForm";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { MAX_FILE_SIZE } from '@/utils'
+import { convertFileToUrl } from "@/utils/utils";
+import Image from "next/image";
+
 
 type FormType = 'sign-in' | 'sign-up'
 
@@ -35,7 +39,8 @@ const AuthForm = ({type}: {type: FormType}) => {
         email?: string;
         picture?: string;
         password?: string;
-        confirm?: string
+        confirm?: string;
+        file?: File
     }>({})
     const [error, setError] = useState<{
         name?: string;
@@ -49,9 +54,11 @@ const AuthForm = ({type}: {type: FormType}) => {
     const [responseMsg,setResponseMsg] = useState('')
     const [tostType,setTostType] = useState('warningMsg')
     const [loading,setLoading] = useState(false)
+    const [file,setFile] = useState<File>()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        setFormData({...formData, file: file})
         setShowToast(false)
         setLoading(true)
         let parserResult: any
@@ -88,7 +95,6 @@ const AuthForm = ({type}: {type: FormType}) => {
                 })
             }
             setLoading(false)
-            console.log(error)
             return
         }
         setError({
@@ -97,7 +103,15 @@ const AuthForm = ({type}: {type: FormType}) => {
             password: '',
             confirm: ''
         })
-        const response = await api.post(type === 'sign-in'? '/user/signin':'/user/signup',formData,{withCredentials: true})
+        const form = new FormData();
+            form.append('name', formData.name || '');
+            form.append('email', formData.email || '');
+            form.append('password', formData.password || '');
+            form.append('confirm', formData.confirm || '');
+            if (formData.file) {
+            form.append('file', formData.file);
+            }
+        const response = await api.post(type === 'sign-in'? '/user/signin':'/user/signup',type === 'sign-in'? formData:form,{withCredentials: true})
         if(response.status !== 201){
             setResponseMsg(response.data.message)
             if(response.status === 202)setTostType('infoMsg');
@@ -155,18 +169,6 @@ const AuthForm = ({type}: {type: FormType}) => {
                     <span>Email*</span>
                 </label>
             </div>
-            {type === 'sign-up' && (
-                <>
-                    <div className="relative w-2/3 lg:w-1/2">
-                        <input name='picture' type="text" value={formData.picture} onChange={(e) => {setFormData({...formData, picture: e.target.value})}} 
-                            className="peer bg-zinc-800 p-2 border border-zinc-700 focus:border-indigo-500 rounded-md outline-none w-full h-10 text-white transition-all duration-200"
-                        />
-                        <label className="left-2 absolute bg-[#212121] px-1 rounded-sm text-gray-400 peer-focus:text-[#2196f3] peer-valid:text-[#2196f3] text-xs text-clip scale-100 peer-focus:scale-75 peer-valid:scale-75 transition-all translate-y-3 peer-focus:-translate-y-2 peer-valid:-translate-y-2 duration-200 pointer-events-none transform">
-                            <span>Picture</span>
-                        </label>
-                    </div>
-                </>
-            )}
             <div className="relative w-2/3 lg:w-1/2">
                 {error.password && <p className="mb-1 text-red-500 text-xs">{error.password}</p>}
                 <input name='password' type={show?'text':'password'} value={formData.password} onChange={(e) => {setFormData({...formData, password: e.target.value})}}required 
@@ -189,6 +191,21 @@ const AuthForm = ({type}: {type: FormType}) => {
                         <label className="left-2 absolute bg-[#212121] px-1 rounded-sm text-gray-400 peer-focus:text-[#2196f3] peer-valid:text-[#2196f3] text-xs text-clip scale-100 peer-focus:scale-75 peer-valid:scale-75 transition-all translate-y-3 peer-focus:-translate-y-2 peer-valid:-translate-y-2 duration-200 pointer-events-none transform">
                             <span>Confirm</span>
                         </label>
+                    </div>
+                </>
+            )}
+            {type === 'sign-up' && (
+                <>
+                    <div className="flex gap-3 w-2/3 lg:w-1/2">
+                        <div className="relative bg-purple-700 p-2 px-3 w-auto h-10">Upload Profile pic<input className='left-0 absolute opacity-0 w-full' type='file' onChange={(e)=>{
+                            const file = e.target.files?.[0];
+                            if (file) {
+                                setFile(file);
+                            }}} name='file' accept="image/*" required placeholder='Upload'/></div>
+                        {file && 
+                        <div className="size-15">
+                            <Image width={100} height={100} className="w-full object-cover" src={convertFileToUrl(file)} alt="Profile" />
+                        </div>}
                     </div>
                 </>
             )}
