@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import postModel from '../models/posts.models'
+import likeModel from '../models/like.model'
 
 interface files{
     creator:string,
@@ -23,6 +24,22 @@ export const  createfile = async ({creator,title,message,tags,owner,path,origina
     path,
     originalname,
     pictureURL,
+  });
+ return file
+}
+
+export const  LikePost = async ({userID}:{userID:any}) => {
+  if(!userID) return
+  const file = await likeModel.create({
+    userID
+  });
+ return file
+}
+
+export const  getLikePost = async ({PostId}:{PostId:any}) => {
+  if(!PostId) return
+  const file = await likeModel.findOne({
+    userID: PostId
   });
  return file
 }

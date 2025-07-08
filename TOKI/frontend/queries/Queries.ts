@@ -61,9 +61,13 @@ export  const getpost = gql`
 export  const getpostpageintion = gql`
       query getuserPost($owner: String!,$offset: Int, $limit: Int){  
         posts(owner:$owner,offset: $offset, limit: $limit){
-        id
-        pictureURL
-        owner
+            id
+            pictureURL
+            creator
+            message
+            like{
+                like
+            }
         }
     }
 `

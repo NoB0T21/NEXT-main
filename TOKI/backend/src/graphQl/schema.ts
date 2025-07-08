@@ -3,6 +3,7 @@ import posts from '../models/posts.models'
 import user from "../models/user.model"
 import following from "../models/user.following.model"
 import follower from "../models/user.followers.model"
+import like from '../models/like.model'
 
 
 
@@ -10,6 +11,14 @@ const UserFollowingType = new GraphQLObjectType({
     name:'UserFollowing',
     fields:()=>({
         count:{type: new GraphQLList(GraphQLString)},
+    })
+})
+
+const PostLikeType = new GraphQLObjectType({
+    name:'PostLike',
+    fields:()=>({
+        id: {type: GraphQLID},
+        like:{type: new GraphQLList(GraphQLString)},
     })
 })
 
@@ -35,16 +44,14 @@ const UserType = new GraphQLObjectType({
         },
         following:{
             type:UserFollowingType,
-            args: {id: {type: GraphQLID}},
             resolve(parent,args){
-                return following.findOne({userID:args.id})
+                return following.findOne({userID:parent.id})
             }
         },
         follower:{
             type:UserFollowersType,
-            args: {id: {type: GraphQLID}},
             resolve(parent,args){
-                return follower.findOne({userID:args.id})
+                return follower.findOne({userID:parent.id})
             }
         }
     })
@@ -62,6 +69,12 @@ const PostType:any = new GraphQLObjectType({
         originalname:{type: GraphQLString},
         createdAt:{type: GraphQLString},
         owner:{type: GraphQLString},
+        like:{
+            type:PostLikeType,
+            resolve(parent,args){
+                return like.findOne({userID:parent.id})
+            }
+        },
         posts:{
             type: UserType,
             resolve(parent,args){

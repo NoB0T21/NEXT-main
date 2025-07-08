@@ -2,7 +2,11 @@
 import { getpostpageintion } from '@/queries/Queries';
 import {useLazyQuery} from '@apollo/client'
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { ProfileHeader } from './navigation/Header';
+import ProfileData from './ProfileData';
+import ProfileNav from './navigation/ProfileNav';
+import PostCard from './card/PostCard';
 
 interface Posts {
   id: string
@@ -10,12 +14,14 @@ interface Posts {
   owner: string
 }
 
-const Userprofile = ({userId}:{userId:string}) => {
+const Userprofile = ({userId , user}:{userId:string,user:any}) => {
   const [posts,setPosts] = useState<Posts[]>([]);
   const [skip, setSkip] = useState(0);
+  const [postId, setPostId] = useState('');
   const [show, setShow] = useState(false);
   const [getuserPost] = useLazyQuery(getpostpageintion)
-    
+  const containerRef = useRef<HTMLDivElement>(null)
+  const currentIndex = posts.findIndex((post) => post.id === postId)
   const fetchMore = async () => {
     const { data } = await getuserPost({
       variables: {
@@ -24,13 +30,14 @@ const Userprofile = ({userId}:{userId:string}) => {
         limit: 8,
       },
     })
-
     if (data?.posts?.length) {
       setPosts((prev) => {
-        const merged = [...prev, ...data.posts]
-        const unique = Array.from(new Map(merged.map((p) => [p.id, p])).values())
-        return unique
-      })
+        const merged = [...prev, ...data.posts]; // Merge old and new posts
+        const unique = Array.from(
+          new Map(merged.map((p) => [p.id, p])).values() // Deduplicate by post.id
+        );
+        return unique; // Set state with only unique posts
+      });
     }
   }
 
@@ -45,41 +52,49 @@ const Userprofile = ({userId}:{userId:string}) => {
        fetchMore();
    }, [skip]);
 
+    useEffect(() => {
+    if (containerRef.current) {
+      const postElement = containerRef.current.children[currentIndex] as HTMLElement
+      postElement?.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' })
+    }
+  }, [currentIndex])
+
   return (
     <>
-      {!show && <div onScroll={handleScroll} className="gap-4 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 mt-5 w-full h-2/3 overflow-scroll">
+      {!show && 
+      <><ProfileHeader name={user.name}/>
+            <ProfileData 
+              picture={user.picture} 
+              posts={user.posts.length} 
+              follower={!user.follower?0:user.follower.length} 
+              following={!user.following?0:user.following.length}
+            />
+            <div className='top-12 z-3 sticky'>
+              <ProfileNav/>
+            </div>
+      <div onScroll={handleScroll} className="gap-4 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 mt-5 w-full h-2/3 overflow-y-scroll">
         {posts.map((f:any)=>(
-          <div key={f.id} onClick={()=>setShow(true)} className="bg-[rgba(84,84,84,0.6)] md:bg-[rgba(84,84,84,0.4)] backdrop-blur-xl rounded-md w-full h-70 overflow-hidden">
+          <div key={f.id} onClick={()=>{setShow(true);setPostId(f.id)}} className="bg-[rgba(84,84,84,0.6)] md:bg-[rgba(84,84,84,0.4)] backdrop-blur-xl rounded-md w-full h-70 overflow-hidden">
         
                     <div className="w-full h-full">
                       <Image
                         src={f.pictureURL}
                         alt="Post"
-                        width={100}
-                        height={100}
+                        width={1920}
+                        height={1080}
                         className="bg-black rounded-md w-full h-full object-contain md:object-cover"
                         />
             </div>
           </div>
         ))} 
-      </div>}
-      {show && 
-      <div onScroll={handleScroll} className="gap-4 grid mt-5 w-full h-2/3 overflow-scroll">
+      </div></>}
+      {show && <>
+      <h1 className='font-bold text-2xl'>Posts</h1>
+      <div ref={containerRef} onScroll={handleScroll} className="gap-4 grid mt-5 w-full h-[85vh] overflow-y-scroll scroll-smooth snap-mandatory snap-y">
         {posts.map((f:any)=>(
-          <div key={f.id} className="bg-[rgba(84,84,84,0.6)] md:bg-[rgba(84,84,84,0.4)] backdrop-blur-xl rounded-md w-full h-70 overflow-hidden">
-        
-                    <div className="w-full h-full">
-                      <Image
-                        src={f.pictureURL}
-                        alt="Post"
-                        width={100}
-                        height={100}
-                        className="bg-black rounded-md w-full h-full object-contain md:object-cover"
-                        />
-            </div>
-          </div>
+          <PostCard key={f.id} file={f} profile={user.picture} name={user.name} userID={userId}/>
         ))} 
-      </div>}
+      </div></>}
     </>
   )
 }

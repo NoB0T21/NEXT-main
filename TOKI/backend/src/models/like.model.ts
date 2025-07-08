@@ -1,11 +1,11 @@
 import mongoose, { Schema, Types } from "mongoose";
 
-interface Following{
+interface Like{
     userID: Types.ObjectId,
     like: Types.ObjectId[]
 }
 
-const followingSchema:Schema<Following> = new mongoose.Schema({
+const followingSchema:Schema<Like> = new mongoose.Schema({
     userID:{
         type:mongoose.Schema.Types.ObjectId,
         required: true,
@@ -17,5 +17,5 @@ const followingSchema:Schema<Following> = new mongoose.Schema({
     }]
 })
 
-const following = mongoose.model<Following>('followings',followingSchema)
-export default following
+const like = mongoose.model<Like>('Like',followingSchema)
+export default like

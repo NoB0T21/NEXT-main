@@ -29,19 +29,9 @@ const page = async  ({ params }: Props) => {
   
 
   return (
-    <main className='w-full h-full'>
-      <ProfileHeader name={data.user.name}/>
-      <ProfileData 
-        picture={data.user.picture} 
-        posts={data.user.posts.length} 
-        follower={!data.user.follower?0:data.user.follower.length} 
-        following={!data.user.following?0:data.user.following.length}
-      />
-      <div className='top-12 z-3 sticky'>
-        <ProfileNav/>
-      </div>
+    <main className='w-full h-full overflow-hidden'>
         <ApolloWrapper>
-          <Userprofile userId={userId}/>
+          <Userprofile userId={userId} user={data.user}/>
         </ApolloWrapper>
     </main>
     
