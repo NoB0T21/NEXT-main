@@ -2,7 +2,8 @@ import mongoose, { Schema, Types } from "mongoose";
 
 interface Following{
     userID: Types.ObjectId,
-    count: Types.ObjectId[]
+    count: Types.ObjectId[],
+    folloingCount:number
 }
 
 const followingSchema:Schema<Following> = new mongoose.Schema({
@@ -14,7 +15,11 @@ const followingSchema:Schema<Following> = new mongoose.Schema({
     count:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:'user'
-    }]
+    }],
+    folloingCount:{
+        type: Number,
+        default:0
+    }
 })
 
 const following = mongoose.model<Following>('followings',followingSchema)

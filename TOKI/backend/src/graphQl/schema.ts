@@ -4,6 +4,7 @@ import user from "../models/user.model"
 import following from "../models/user.following.model"
 import follower from "../models/user.followers.model"
 import like from '../models/like.model'
+import PostCount from "../models/post.count.model"
 
 
 
@@ -11,6 +12,7 @@ const UserFollowingType = new GraphQLObjectType({
     name:'UserFollowing',
     fields:()=>({
         count:{type: new GraphQLList(GraphQLString)},
+        followingCount:{type:GraphQLInt}
     })
 })
 
@@ -19,6 +21,15 @@ const PostLikeType = new GraphQLObjectType({
     fields:()=>({
         id: {type: GraphQLID},
         like:{type: new GraphQLList(GraphQLString)},
+        likeCount:{type:GraphQLInt}
+    })
+})
+
+const PostcountType = new GraphQLObjectType({
+    name:'PostCount',
+    fields:()=>({
+        owner: {type: GraphQLID},
+        postcount:{type: GraphQLInt},
     })
 })
 
@@ -26,6 +37,7 @@ const UserFollowersType = new GraphQLObjectType({
     name:'UserFollower',
     fields:()=>({
         count:{type: new GraphQLList(GraphQLString)},
+        followerCount:{type:GraphQLInt}
     })
 })
 
@@ -36,10 +48,10 @@ const UserType = new GraphQLObjectType({
         name:{type: GraphQLString},
         email:{type: GraphQLString},
         picture:{type: GraphQLString},
-        posts:{
-            type: new GraphQLList(PostType),
+        postcount:{
+            type: PostcountType,
             resolve(parent,args){
-                return posts.find({owner:parent.id})
+                return PostCount.findOne({owner:parent.id})
             }
         },
         following:{

@@ -28,7 +28,7 @@ const SidebarBtn = ({pathname,name}:{pathname: string, name: string}) => {
           </div>
           <div className="hidden lg:flex">{name}</div>
         </div>
-        <div className={`${show?'left-0 flex flex-col':'hidden'} top-0 p-10 backdrop-blur-sm h-full z-1 w-full absolute`}>
+        <div className={`${show?'left-0 flex flex-col':'hidden'} top-0 p-10 backdrop-blur-sm h-full z-5 w-full absolute`}>
           <div className="flex justify-end w-full"><h1 onClick={()=>setShow(!show)} className="font-bold text-xl">X</h1></div>
           <UploadForm/>
         </div>

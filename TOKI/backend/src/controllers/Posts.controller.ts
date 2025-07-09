@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import uuid from "uuid4";
 import supabase from "../Db/supabase";
-import { createfile, getLikePost, LikePost } from "../services/post.service";
+import { createfile, declikeCount, getLikePost, inclikeCount, LikePost } from "../services/post.service";
 
 export const uploadFile = async (request: Request, response: Response) => {
     const { file } = request;
@@ -89,8 +89,10 @@ export const likeFile = async (request: Request, response: any) => {
         
         if (index === -1) {
             post.like.push(id); // Like
+            const postlikecount = await inclikeCount({PostId});
         } else {
             post.like.splice(index, 1); // Unlike
+            const postlikecount = await declikeCount({PostId});
         }
         await post.save();
         return response.status(200).json({

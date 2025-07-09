@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import {OAuth2Client} from 'google-auth-library'
 import { NextFunction, Request, Response } from 'express'
+import { findUser } from '../services/user.service';
 
 const client = new OAuth2Client(process.env.GOOGLE_ID)
 
@@ -27,7 +28,8 @@ const middleware = async (req: Request, res: Response, next: NextFunction) => {
   } catch (err) {
     try {
       const googleInfo = await client.getTokenInfo(accessToken);
-      req.user = googleInfo;
+      const existingUsers = await findUser({email:googleInfo.email})
+      req.user = existingUsers;
       next();
     } catch (err) {
       res.status(403).json({ message: 'Invalid or expired token' });

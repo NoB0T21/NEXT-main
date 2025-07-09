@@ -9,7 +9,7 @@ interface EmailParam {
     password:string
 }
 
-export const findUser =  async ({email}:{email:string}) => {
+export const findUser =  async ({email}:{email:string|undefined}) => {
   const user = await User.findOne({email})
   if(!user)return null
   return user

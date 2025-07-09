@@ -1,8 +1,5 @@
 
 import createApolloClient from '@/apollo-client'
-import { ProfileHeader } from '@/components/navigation/Header'
-import ProfileNav from '@/components/navigation/ProfileNav'
-import ProfileData from '@/components/ProfileData'
 import Userprofile from '@/components/Userprofile'
 import { getpost} from '@/queries/Queries'
 import { ApolloWrapper } from '@/context/ApolloClientProvider'

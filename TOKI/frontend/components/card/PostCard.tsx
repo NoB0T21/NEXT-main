@@ -14,11 +14,13 @@ interface Post{
     message:string,
     like:{
         like:string[]
+        likeCount:number
     }
 }
 
 const PostCard = ({file, profile, name, userID}:{file:Post,profile:string, name:string,userID:string}) => {
-    const [like, setLike ] = useState<string[]|null>(file?.like?.like)
+    const [like, setLike ] = useState<string[]>(file?.like?.like)
+    const [likecount, setLikeCount ] = useState<number>(file?.like?.likeCount)
     const token = Cookies.get('token');
     const route = useRouter()
     const likePost = async () => {
@@ -36,14 +38,15 @@ const PostCard = ({file, profile, name, userID}:{file:Post,profile:string, name:
     );
     if(data.status === 200) {
       const currentLikes = Array.isArray(like) ? like : [];
-
       const index = currentLikes.indexOf(userID);
       let updatedLikes;
 
       if (index === -1) {
         updatedLikes = [...currentLikes, userID]; // Add like
+        setLikeCount(prev => prev + 1);
       } else {
         updatedLikes = currentLikes.filter(id => id !== userID); // Remove like
+        setLikeCount(prev => (prev > 0 ? prev - 1 : 0));
       }
       setLike(updatedLikes);
     }
@@ -77,8 +80,8 @@ const PostCard = ({file, profile, name, userID}:{file:Post,profile:string, name:
         </div>
         <div className="bottom-0 absolute p-5 w-full h-20">
             <div onClick={() =>likePost()} className="flex gap-3">
-                <div className="flex gap-1"><div className={`size-7 `}>{!like?<Like/>:(like?.includes(userID)?<LikeFill/>:<Like/>)}</div>{!like?0:like.length}</div>
-                <div className="flex gap-1"><div className={`size-7`}><LikeFill/></div>{!like?0:like.length}</div>
+                <div className="flex gap-1"><div className={`size-7 `}>{like?.includes(userID)?<LikeFill/>:<Like/>}</div>{likecount}</div>
+                <div className="flex gap-1"><div className={`size-7`}><LikeFill/></div>{likecount}</div>
             </div>
             <div className="">
                 <Readmore text={file.message} maxLength={30} />

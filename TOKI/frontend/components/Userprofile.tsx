@@ -19,18 +19,26 @@ const Userprofile = ({userId , user}:{userId:string,user:any}) => {
   const [skip, setSkip] = useState(0);
   const [postId, setPostId] = useState('');
   const [show, setShow] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [getuserPost] = useLazyQuery(getpostpageintion)
   const containerRef = useRef<HTMLDivElement>(null)
   const currentIndex = posts.findIndex((post) => post.id === postId)
+  
   const fetchMore = async () => {
+    if (!hasMore) return;
     const { data } = await getuserPost({
       variables: {
         owner: userId,
-        offset: skip*8,
-        limit: 8,
+        offset: skip*10,
+        limit: 10,
       },
     })
-    if (data?.posts?.length) {
+    const newPosts = data?.posts || [];
+
+    if (newPosts.length < 10) {
+      setHasMore(false); // No more posts to fetch
+    }
+    if (newPosts.length) {
       setPosts((prev) => {
         const merged = [...prev, ...data.posts]; // Merge old and new posts
         const unique = Array.from(
@@ -43,7 +51,7 @@ const Userprofile = ({userId , user}:{userId:string,user:any}) => {
 
     const handleScroll = (e: React.UIEvent<HTMLElement>) => {
       const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-     if (scrollTop + clientHeight >= scrollHeight - 100) {
+     if (scrollTop + clientHeight >= scrollHeight - 100 && hasMore) {
        setSkip(prev => prev + 1);
      }
    };
@@ -65,7 +73,7 @@ const Userprofile = ({userId , user}:{userId:string,user:any}) => {
       <><ProfileHeader name={user.name}/>
             <ProfileData 
               picture={user.picture} 
-              posts={user.posts.length} 
+              posts={user.postcount.postcount} 
               follower={!user.follower?0:user.follower.length} 
               following={!user.following?0:user.following.length}
             />
@@ -89,8 +97,8 @@ const Userprofile = ({userId , user}:{userId:string,user:any}) => {
         ))} 
       </div></>}
       {show && <>
-      <h1 className='font-bold text-2xl'>Posts</h1>
-      <div ref={containerRef} onScroll={handleScroll} className="gap-4 grid mt-5 w-full h-[85vh] overflow-y-scroll scroll-smooth snap-mandatory snap-y">
+      <h1 className='flex gap-3 font-bold text-2xl'><div onClick={()=>setShow(false)}>/</div> Posts</h1>
+      <div ref={containerRef} onScroll={handleScroll} className="gap-4 grid mt-5 w-full h-[80vh] overflow-y-scroll scroll-smooth snap-mandatory snap-y">
         {posts.map((f:any)=>(
           <PostCard key={f.id} file={f} profile={user.picture} name={user.name} userID={userId}/>
         ))} 

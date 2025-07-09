@@ -1,17 +1,28 @@
-'use client'
 
-import FileCard from '@/components/card/FileCard'
-import { useUser } from '@/context/context'
+import createApolloClient from '@/apollo-client';
+import Userprofile from '@/components/Userprofile';
+import { ApolloWrapper } from '@/context/ApolloClientProvider';
+import { getpost } from '@/queries/Queries';
+import { cookies } from 'next/headers';
 
 
-const page =  () => {
-  const profiledata = useUser()
+const page = async () => {
+  const userId = (await cookies()).get('user')?.value || ''
+   const client = await createApolloClient();
+  
+   const {data} = await client.query({
+     query: getpost,
+     variables: {
+       id: userId,
+       owner: userId
+     },
+   });
 
   return (
-    <div className="gap-4 grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 w-full h-full">
-      {profiledata.posts.map((f:any)=>(
-        <FileCard key={f.id} post={f} owner={profiledata.owner}/>
-      ))}
+    <div className="w-full h-full overflow-hidden">
+      <ApolloWrapper>
+          <Userprofile userId={userId} user={data.user}/>
+      </ApolloWrapper>
     </div>
   )
 }

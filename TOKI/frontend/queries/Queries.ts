@@ -41,8 +41,8 @@ export  const getpost = gql`
             id
             name
             picture
-            posts {
-                creator
+            postcount {
+                postcount
             }
             follower{
                 count
@@ -67,6 +67,7 @@ export  const getpostpageintion = gql`
             message
             like{
                 like
+                likeCount
             }
         }
     }
