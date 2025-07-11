@@ -1,14 +1,14 @@
 'use client'
 
 import { convertFileToUrl } from "@/utils/utils";
-import Image from "next/image";
 import { useState } from "react";
 import { PulseLoader } from "react-spinners";
 import { z } from "zod";
-import Toasts from "./toasts/Toasts";
 import { api } from "@/utils/api";
-import Cookies from 'js-cookie'
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Toasts from "./toasts/Toasts";
+import Cookies from 'js-cookie'
 
 const formSchema = z.object({
     creator: z.string().min(1, "creator required"),
@@ -50,27 +50,27 @@ const UploadForm = () => {
     const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter' || e.key === ',' && inputValue.trim() !== '') {
         const newTags = inputValue
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(tag => tag.length > 0)
-      .map(tag => (tag.startsWith('#') ? tag : `#${tag}`))
-      .filter(tag => !(formData.tags|| []).includes(tag));
-      
-      if (newTags.length > 0) {
-        setFormData(prev => ({
-          ...prev,
-          tags: [...(prev.tags|| []), ...newTags],
-        }));
-      }
+            .split(',')
+            .map(tag => tag.trim())
+            .filter(tag => tag.length > 0)
+            .map(tag => (tag.startsWith('#') ? tag : `#${tag}`))
+            .filter(tag => !(formData.tags|| []).includes(tag));
+        if (newTags.length > 0) {
+            setFormData(prev => ({
+            ...prev,
+            tags: [...(prev.tags|| []), ...newTags],
+            }));
+        }
+
         setInputValue('');
       }
     };
 
     const removeTag = (indexToRemove: number) => {
-      setFormData((prev) => ({
-        ...prev,
-        tags: (prev.tags|| []).filter((_, index) => index !== indexToRemove),
-      }));
+        setFormData((prev) => ({
+            ...prev,
+            tags: (prev.tags|| []).filter((_, index) => index !== indexToRemove),
+        }));
     };
 
      const clear = () => {
@@ -90,11 +90,11 @@ const UploadForm = () => {
         setShowToast(false)
         setLoading(true)
 
-            const parserResult = formSchema.safeParse({
-                creator:formData.creator,
-                owner: formData.owner,
-                files: files,
-            })
+        const parserResult = formSchema.safeParse({
+            creator:formData.creator,
+            owner: formData.owner,
+            files: files,
+        })
         if(!parserResult.success){
             const errorMessages = parserResult.error.flatten().fieldErrors
             setError({
@@ -105,11 +105,13 @@ const UploadForm = () => {
             setLoading(false)
             return
         }
+
         setError({
             creator: '',
             owner: '',
             files: ''
         })
+
         const form = new FormData();
             form.append('creator', formData.creator || '');
             form.append('title', formData.title || '');
@@ -117,8 +119,8 @@ const UploadForm = () => {
             form.append('tags', JSON.stringify(formData.tags || []));
             form.append('owner', formData.owner || '');
             if (files) {
-            form.append('file', files);
-        }
+                form.append('file', files);
+            }
 
         const response = await api.post('/post/create',form,{
             headers: {
@@ -136,6 +138,7 @@ const UploadForm = () => {
             }, 3000);
             return
         }
+
         setLoading(false)
         setFormData({
             creator:user?.name, 
@@ -145,15 +148,17 @@ const UploadForm = () => {
             owner:user?._id
         })
         setResponseMsg(response.data.message)
-        if(response.status === 200)setTostType('infoMsg');
-            setLoading(false)
-            setShowToast(true)
-            setTimeout(() => {
-                setShowToast(false)
+        if(response.status === 200){
+            setTostType('infoMsg');
+        }
+
+        setLoading(false)
+        setShowToast(true)
+        setTimeout(() => {
+            setShowToast(false)
         }, 3000);
         router.refresh()
         return
-        
     }
 
   return (

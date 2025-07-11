@@ -19,6 +19,6 @@ const createApolloClient = () =>
   new ApolloClient({
     link: authLink.concat(httpLink),
     cache: new InMemoryCache(),
-  })
+})
 
 export default createApolloClient

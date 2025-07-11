@@ -22,8 +22,8 @@ const formSchema = z.object({
     password: z.string().min(3,"length 3"),
     confirm: z.string()
 }).refine((data) => data.password === data.confirm,{
-        message:"Password does not match",
-        path:["confirm"]
+    message:"Password does not match",
+    path:["confirm"]
 })
 
 const signInSchema = z.object({
@@ -70,7 +70,6 @@ const AuthForm = ({type}: {type: FormType}) => {
                 confirm: formData.confirm
             })
         }
-
         if(type === 'sign-in'){
             parserResult = signInSchema.safeParse({
                 email: formData.email,
@@ -80,7 +79,6 @@ const AuthForm = ({type}: {type: FormType}) => {
 
         if(!parserResult.success){
             const errorMessages = parserResult.error.flatten().fieldErrors
-
             if(type === 'sign-up'){
                 setError({
                     name: errorMessages.name?.[0],
@@ -89,7 +87,6 @@ const AuthForm = ({type}: {type: FormType}) => {
                     confirm: errorMessages.confirm?.[0]
                 })
             }
-
             if(type === 'sign-in'){
                 setError({
                     name: '',
@@ -118,7 +115,6 @@ const AuthForm = ({type}: {type: FormType}) => {
             if (file) {
                 form.append('file', file);
             }
-
         const form2 = new FormData();
             form2.append('email', formData.email || '');
             form2.append('password', formData.password || '');
@@ -127,6 +123,7 @@ const AuthForm = ({type}: {type: FormType}) => {
             headers: { "Content-Type": "multipart/form-data" },
             withCredentials: true
         })
+
         if(response.status !== 201){
             setResponseMsg(response.data.message)
             if(response.status === 202)setTostType('infoMsg');
@@ -154,7 +151,7 @@ const AuthForm = ({type}: {type: FormType}) => {
             expires: 1, // days
             sameSite: "strict",
             secure: true
-          });
+        });
         router.push('/')
         setLoading(false)
     }

@@ -36,19 +36,18 @@ export const register = async (request: Request, response: any) => {
         const files = file?.originalname.split(" ").join("");
         const uniqueFilename = `${uuid4()}-${files}`;
         let pictureuri
-
         if(file){
             const { data, error } = await supabase.storage
-            .from("toki")
-            .upload(uniqueFilename, file?.buffer, {
-                contentType: file?.mimetype,
-                cacheControl: "3600",
-                upsert: false,
-            });
+                .from("toki")
+                .upload(uniqueFilename, file?.buffer, {
+                    contentType: file?.mimetype,
+                    cacheControl: "3600",
+                    upsert: false,
+                });
             if (error) {
-                response.status(500).json({
-                message: "Server error",
-                success: false,
+                    response.status(500).json({
+                    message: "Server error",
+                    success: false,
                 });
                 return
             }
@@ -81,6 +80,7 @@ export const register = async (request: Request, response: any) => {
         })
         
         const token = await user.generateToken()
+
         return response.status(201).json({
             message: "User created successfully",
             user,
@@ -165,6 +165,7 @@ export const valid = async (req: Request, res:any) => {
                     success: false,
                 })
             }
+            
             return res.status(200).json({
                 message: "verified",
                 success: true,

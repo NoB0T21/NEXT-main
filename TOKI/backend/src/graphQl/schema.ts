@@ -92,6 +92,19 @@ const PostType:any = new GraphQLObjectType({
             resolve(parent,args){
                 return posts.findById({_id:parent.owner})
             }
+        },
+        following:{
+            type:UserFollowingType,
+            resolve(parent,args){
+                return following.findOne({userID:parent.owner})
+            }
+        },
+        user:{
+            type:UserType,
+            args:{id:{type:GraphQLID}},
+            resolve(parent,args){
+                return user.findById(parent.owner)
+            }
         }
     })
 })
@@ -123,8 +136,25 @@ const RootQuery = new GraphQLObjectType({
 
             resolve(parent,args){
                 return posts.find({owner: args.owner})
+                .sort({ createdAt: -1 })
                 .skip(args.offset || 0)
                 .limit(args.limit || 5)
+            }
+        },
+        exploreposts:{
+            type:new GraphQLList(PostType),
+            args: {
+                offset: { type: GraphQLInt },
+                limit: { type: GraphQLInt },
+                excludeOwner: { type: GraphQLID },
+            },
+
+            resolve: async (parent,args) => {
+                const randomPosts = await posts.find({owner: { $ne: args.excludeOwner }})
+                .skip(args.offset || 0)
+                .limit(args.limit || 5)
+
+                return randomPosts.sort(() => Math.random()-0.6);
             }
         },
     }

@@ -1,12 +1,12 @@
 
 import { useGoogleLogin } from "@react-oauth/google"
-import axios from "axios"
 import { useState } from "react"
-import Toasts from "./toasts/Toasts";
 import { Google } from "./Icons";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { api } from "@/utils/api";
+import axios from "axios"
+import Toasts from "./toasts/Toasts";
+import Cookies from "js-cookie";
 
 const GoogleForm = () => {
   const router=useRouter()
@@ -17,6 +17,7 @@ const GoogleForm = () => {
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async(res) => {
       setShowToast(false)
+      
       try {
         const responses = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo',{
           headers:{

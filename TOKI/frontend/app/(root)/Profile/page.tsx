@@ -8,16 +8,15 @@ import { cookies } from 'next/headers';
 
 const page = async () => {
   const userId = (await cookies()).get('user')?.value || ''
-   const client = await createApolloClient();
+  const client = await createApolloClient();
   
-   const {data} = await client.query({
-     query: getpost,
-     variables: {
-       id: userId,
-       owner: userId
-     },
-   });
-
+  const {data} = await client.query({
+    query: getpost,
+    variables: {
+      id: userId,
+      owner: userId
+    },
+  });
   return (
     <div className="w-full h-full overflow-hidden">
       <ApolloWrapper>

@@ -19,8 +19,8 @@ const FileCard = ({post,owner}:{post : Post,owner:string}) => {
         <Image
           src={post.pictureURL}
           alt="Post"
-          width={100}
-          height={100}
+          width={1920}
+          height={1080}
           className="bg-black rounded-md w-full h-full object-contain md:object-cover"
         />
       </div>

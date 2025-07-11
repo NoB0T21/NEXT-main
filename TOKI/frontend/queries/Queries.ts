@@ -64,10 +64,36 @@ export  const getpostpageintion = gql`
             id
             pictureURL
             creator
+            title
             message
+            originalname
             like{
                 like
                 likeCount
+            }
+        }
+    }
+`
+
+export  const getexplorepostpageintion = gql`
+      query getuserPost($excludeOwner:ID, $offset: Int, $limit: Int){  
+        exploreposts(excludeOwner: $excludeOwner, offset: $offset, limit: $limit){
+            id
+            pictureURL
+            message
+            title
+            tags
+            like{
+                like
+                likeCount
+            }
+            following{
+                count
+            }
+            user{
+                id
+                name
+                picture
             }
         }
     }
