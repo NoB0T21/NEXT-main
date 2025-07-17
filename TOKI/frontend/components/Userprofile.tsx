@@ -10,17 +10,28 @@ import PostCard from './card/PostCard';
 import { useRouter } from 'next/navigation';
 
 interface Posts {
-  id: string
-  pictureURL: string
-  owner: string
+  id:string,
+    pictureURL: string,
+    creator:string
+    message:string,
+    title:string,
+    owner:string,
+    tags: [],
+    originalname:string,
+    like:{
+        like:string[]
+        likeCount:number
+    }
 }
 
 interface User {
   follower: {
     count: string[]
+    followerCount:number
   },
   following:{ 
     count: string[]
+    folloingCount:number
   },
   id: string,
   name: string,
@@ -41,10 +52,8 @@ const Userprofile = ({userId , user}:{userId:string,user:User}) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const currentIndex = posts.findIndex((post) => post.id === postId)
   const router = useRouter();
-  
   const fetchMore = async () => {
     if (!hasMore) return;
-
     const { data } = await getuserPost({
       variables: {
         owner: userId,
@@ -52,7 +61,7 @@ const Userprofile = ({userId , user}:{userId:string,user:User}) => {
         limit: 10,
       },
     })
-
+    console.log(user)
     const newPosts = data?.posts || [];
     if (newPosts.length < 10 ) {
       setHasMore(false); // No more posts to fetch
@@ -68,7 +77,7 @@ const Userprofile = ({userId , user}:{userId:string,user:User}) => {
     }
     router.refresh();
   }
-
+  
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     if (scrollTop + clientHeight >= scrollHeight - 100 && hasMore) {
@@ -76,11 +85,11 @@ const Userprofile = ({userId , user}:{userId:string,user:User}) => {
       setCount(!user.postcount.postcount?user.postcount.postcount:0)
     }
   };
-
+  
   useEffect(() => {
     fetchMore();
-   }, [skip]);
-
+  }, [skip]);
+  
   useEffect(() => {
     if (containerRef.current) {
       const postElement = containerRef.current.children[currentIndex] as HTMLElement
@@ -95,10 +104,13 @@ const Userprofile = ({userId , user}:{userId:string,user:User}) => {
       <>
         <ProfileHeader name={user.name}/>
         <ProfileData 
+          id={user.id}
           picture={user.picture} 
           posts={count} 
-          follower={!user.follower?0:user.follower.count.length} 
-          following={!user.following?0:user.following.count.length}
+          follower={user.follower.followerCount} 
+          following={user.following.folloingCount}
+          followinglist={user.following.count}
+          followerlist={user.follower.count}
         />
         <div className='top-12 z-3 sticky'>
           <ProfileNav/>
@@ -124,7 +136,7 @@ const Userprofile = ({userId , user}:{userId:string,user:User}) => {
         <h1 className='flex gap-3 font-bold text-2xl'><div onClick={()=>setShow(false)}>/</div> Posts</h1>
         <div ref={containerRef} onScroll={handleScroll} className="gap-4 grid mt-5 w-full h-[80vh] overflow-y-scroll scroll-smooth snap-mandatory snap-y">
           {posts.map((f:any)=>(
-            <PostCard key={f.id} file={f} profile={user.picture} name={user.name} userID={userId}/>
+            <PostCard key={f.id} followings={user.following.count} file={f} profile={user.picture} name={user.name} userID={userId}/>
           ))} 
         </div>
       </>}

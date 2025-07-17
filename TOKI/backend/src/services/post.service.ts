@@ -3,6 +3,7 @@ import postModel from '../models/posts.models'
 import likeModel from '../models/like.model'
 import PostCount from '../models/post.count.model'
 import following from '../models/user.following.model'
+import follower from "../models/user.followers.model";
 
 interface files{
     creator:string,
@@ -93,6 +94,34 @@ export const  incfollowingCount = async ({userId}:{userId:string}) => {
 export const  decfollowingCount = async ({userId}:{userId:string}) => {
   if(!userId) return
   const updatedPostCount = await following.findOneAndUpdate(
+    { userID: userId },           // Find by owner ID
+    { $inc: { folloingCount: -1 } },  // Decrement by 1
+    { new: true }                 // Return the updated document
+  );
+ return
+}
+
+export const  getuserfollower = async ({userId}:{userId:string}) => {
+  if(!userId) return
+  const file = await follower.findOne({
+    userID: userId
+  });
+ return file
+}
+
+export const  incfollowerCount = async ({userId}:{userId:string}) => {
+  if(!userId) return
+  const updatedPostCount = await follower.findOneAndUpdate(
+    { userID: userId },           // Find by owner ID
+    { $inc: { folloingCount: 1 } },  // increment by 1
+    { new: true }                 // Return the updated document
+  );
+ return
+}
+
+export const  decfollowerCount = async ({userId}:{userId:string}) => {
+  if(!userId) return
+  const updatedPostCount = await follower.findOneAndUpdate(
     { userID: userId },           // Find by owner ID
     { $inc: { folloingCount: -1 } },  // Decrement by 1
     { new: true }                 // Return the updated document

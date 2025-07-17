@@ -130,3 +130,8 @@
 Your ByteBox cloud storage app is now up and running locally!
 
 </details>
+
+## 🙋‍♂️ Author
+**Aryan Gawade**
+- 🔗 [LinkedIn](https://www.linkedin.com/in/aryan-gawade-3723672ab/)
+- 🔗 [GitHub URL](https://github.com/NoB0T21)

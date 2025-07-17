@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Like, LikeFill } from "../Icons";
 import { api } from "@/utils/api";
+import Link from "next/link";
 
 interface Posts {
     id: string
@@ -208,7 +209,7 @@ const Explore = () => {
                 className="bg-black rounded-md w-full h-1/2 xs:h-2/3 sm:h-3/4 object-contain"
             />
             <div onClick={followuser} className="right-5 absolute flex items-center px-2 border-1 rounded-md">{following?.includes(userId)?'Following':'Follow'}</div>
-            <div className="left-5 absolute flex items-center gap-3 px-2">
+            <Link href={`/User/${post.user.id}`} className="left-5 absolute flex items-center gap-3 px-2">
               <Image
                 src={post.user.picture}
                 alt="Post"
@@ -217,10 +218,10 @@ const Explore = () => {
                 className="bg-black rounded-full size-11 object-cover"
               />
               <div className="font-semibold">{post.user.name}</div>
-            </div>
+            </Link>
             <div>
                 <div onClick={() =>likePost()} className="flex gap-3">
-                <div className="flex gap-1"><div className={`size-7 ${like?.includes(userId)?'text-[#b03636]':''} `}>{like?.includes(userId)?<LikeFill/>:<Like/>}</div>{likecount}</div>
+                <div className="flex gap-1"><div className={`size-7`}>{like?.includes(userId)?<LikeFill/>:<Like/>}</div>{likecount}</div>
                 <div className="md:hidden flex gap-1"><div className={`size-7`}><LikeFill/></div>{likecount}</div>
             </div>
              <div className='flex justify-start mx-1mt-1 p-1'>

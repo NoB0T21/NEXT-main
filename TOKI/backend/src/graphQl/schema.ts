@@ -12,7 +12,7 @@ const UserFollowingType = new GraphQLObjectType({
     name:'UserFollowing',
     fields:()=>({
         count:{type: new GraphQLList(GraphQLString)},
-        followingCount:{type:GraphQLInt}
+        folloingCount:{type:GraphQLInt}
     })
 })
 
@@ -157,6 +157,19 @@ const RootQuery = new GraphQLObjectType({
                 return randomPosts.sort(() => Math.random()-0.6);
             }
         },
+        followinguser:{
+            type:new GraphQLList(UserType),
+            args:{
+                offset: { type: GraphQLInt },
+                limit: { type: GraphQLInt },
+                userIds:{type:new GraphQLList(GraphQLID)}
+            },
+            resolve(parent,args){
+                return user.find({_id: {$in: args.userIds}})
+                .skip(args.offset || 0)
+                .limit(args.limit || 5)
+            }
+        }
     }
 })
 

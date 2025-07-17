@@ -46,9 +46,11 @@ export  const getpost = gql`
             }
             follower{
                 count
+                followerCount
             }
             following{
                 count
+                folloingCount
             }
         }
         posts(owner:$owner){
@@ -65,6 +67,8 @@ export  const getpostpageintion = gql`
             pictureURL
             creator
             title
+            owner
+            tags
             message
             originalname
             like{
@@ -97,4 +101,20 @@ export  const getexplorepostpageintion = gql`
             }
         }
     }
+`
+
+export  const getfollowinguser = gql`
+      query getuserList($userIds: [ID], $offset: Int, $limit: Int) {
+        followinguser(userIds: $userIds, offset: $offset, limit: $limit) {
+            id
+            name
+            picture
+            follower{
+                count
+            }
+            following{
+                count
+            }
+        }
+        }
 `
