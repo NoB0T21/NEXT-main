@@ -67,38 +67,37 @@ const Followers = ({followinglist,id}:Following) => {
     useEffect(() => {
       fetchMore();
     }, [skip]);
-
-    const followuser = async ({userId}:{userId:string}) => {    
-        if(!token){
-          return
+    
+    const removeuser = async ({CreatorId}:{CreatorId:string}) => {    
+      if(!token){
+        return
+      }
+      const data = await api.get(`/post/follow/remove/${CreatorId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
         }
-                 const data = await api.get(`/post/follow/${userId}`,
-                   {
-                     headers: {
-                       Authorization: `Bearer ${token}`,
-                     },
-                     withCredentials: true,
-                   }
-                 );
-                 if(data.status === 200) {
-                   const currentLikes = Array.isArray(following) ? following : [];
-                   const index = currentLikes.indexOf(userID);
-                   let updatedFollow;
-           
-                   if (index === -1) {
-                     updatedFollow = [...currentLikes, userID]; // Add like
-                     //setLikeCount(prev => prev + 1);
-                   } else {
-                     updatedFollow = currentLikes.filter(id => id !== userID); // Remove like
-                     //setLikeCount(prev => (prev > 0 ? prev - 1 : 0));
-                   }
-           
-                   setFollowing(updatedFollow);
-                 }
-             }
-
-  return (
-    <div className="py-10 w-110 lg:w-150 h-full">
+      );
+      if(data.status === 200) {
+        const currentLikes = Array.isArray(following) ? following : [];
+        const index = currentLikes.indexOf(userID);
+        let updatedFollow;
+        
+        if (index === -1) {
+          updatedFollow = [...currentLikes, userID]; // Add like
+          //setLikeCount(prev => prev + 1);
+        } else {
+          updatedFollow = currentLikes.filter(id => id !== userID); // Remove like
+          //setLikeCount(prev => (prev > 0 ? prev - 1 : 0));
+        }
+        
+        setFollowing(updatedFollow);
+      }
+    }
+    return (
+      <div className="py-10 w-110 lg:w-150 h-full">
       <div className="flex flex-col items-center gap-7 bg-zinc-700 p-3 rounded-2xl w-full h-full">
         <h1 className="font-semibold text-2xl">Follower</h1>
         <div onScroll={handleScroll} className="flex flex-col gap-3 w-full h-full">
@@ -115,7 +114,7 @@ const Followers = ({followinglist,id}:Following) => {
                             />
                             {user.name}
                         </div>
-                        <div className="px-2 border-1 rounded-md" onClick={()=>followuser({userId:user.id})}>{user.following.count?.includes(userID)?'Following':'Follow'}</div>
+                        <div className="px-2 border-1 rounded-md" onClick={()=>removeuser({CreatorId:user.id})}>{user.following.count?.includes(userID)?'remove':'Following'}</div>
                     </div>
                 </div>
             ))}

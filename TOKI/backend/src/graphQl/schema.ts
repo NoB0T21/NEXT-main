@@ -11,6 +11,7 @@ import PostCount from "../models/post.count.model"
 const UserFollowingType = new GraphQLObjectType({
     name:'UserFollowing',
     fields:()=>({
+        userID:{type: GraphQLString},
         count:{type: new GraphQLList(GraphQLString)},
         folloingCount:{type:GraphQLInt}
     })
@@ -36,6 +37,7 @@ const PostcountType = new GraphQLObjectType({
 const UserFollowersType = new GraphQLObjectType({
     name:'UserFollower',
     fields:()=>({
+        userID:{type: GraphQLString},
         count:{type: new GraphQLList(GraphQLString)},
         followerCount:{type:GraphQLInt}
     })
@@ -97,6 +99,12 @@ const PostType:any = new GraphQLObjectType({
             type:UserFollowingType,
             resolve(parent,args){
                 return following.findOne({userID:parent.owner})
+            }
+        },
+        follower:{
+            type:UserFollowingType,
+            resolve(parent,args){
+                return follower.findOne({userID:parent.owner})
             }
         },
         user:{

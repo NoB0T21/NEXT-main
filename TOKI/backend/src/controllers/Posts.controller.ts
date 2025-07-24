@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import uuid from "uuid4";
 import supabase from "../Db/supabase";
-import { createfile, decfollowerCount, decfollowingCount, declikeCount, getLikePost, getuserfollower, getuserfollowing, incfollowerCount, incfollowingCount, inclikeCount, LikePost } from "../services/post.service";
+import { ObjectId } from 'mongodb';
+import { createfile,decfollowerCount,decfollowingCount,declikeCount, getcreatorFollower, getcreatorFollowing, getLikePost,incfollowerCount,incfollowingCount,inclikeCount, LikePost } from "../services/post.service";
+
+
 
 export const uploadFile = async (request: Request, response: Response) => {
     const { file } = request;
@@ -110,10 +113,60 @@ export const likeFile = async (request: Request, response: any) => {
     }
 };
 
-export const followuser = async (request: Request, response: any) => {
+export const followuser = async (request: Request, response: Response) => {
+    const creatorId = new ObjectId(request.params.id);
+    const userId = request.user._id; // assuming req.user._id is available
+    console.log('userId')
+    try {
+        if (!creatorId || !userId) {
+            return response.status(400).json({
+                message: "Missing fields",
+                success: false,
+            });
+        }
+
+        const follower = await getcreatorFollower({ creatorId });
+        const following = await getcreatorFollowing({ creatorId: userId });
+
+        if (!follower || !following) {
+            return response.status(404).json({ message: "User not found" });
+        }
+
+        const index = follower.count.findIndex((id: ObjectId) => id.toString() === userId.toString());
+        const index2 = following.count.findIndex((id: ObjectId) => id.toString() === creatorId.toString());
+
+        if (index === -1 && index2 === -1) {
+            follower.count.push(userId);
+            following.count.push(creatorId);
+            await incfollowerCount({ creatorId });
+            await incfollowingCount({ creatorId:userId });
+        } else {
+            follower.count.splice(index, 1);
+            following.count.splice(index2, 1);
+            await decfollowerCount({ creatorId });
+            await decfollowingCount({ creatorId:userId });
+        }
+
+        await follower.save();
+        await following.save();
+
+        return response.status(200).json({
+            message: index === -1 ? "Followed successfully" : "Unfollowed successfully",
+            success: true,
+        });
+    } catch (error) {
+        console.error("Error in followuser:", error);
+        return response.status(500).json({
+            message: "Internal server error",
+            success: false,
+        });
+    }
+};
+
+export const removeuser = async (request: Request, response: any) => {
+    const creatorId = new ObjectId(request.params.id);
     const userId = request.user._id
-    const id:any = request.params.id
-    if (!userId) {
+    if (!creatorId||!userId) {
         response.status(400).json({
             message: "Require all fields",
             success: false,
@@ -122,37 +175,32 @@ export const followuser = async (request: Request, response: any) => {
     }
     
     try {
-        const following = await getuserfollowing({ userId }); // the user performing the action
-        const follower = await getuserfollower({ userId: id }); // the user being followed/unfollowed
-
-        if (!following || !follower) {
-        return response.status(404).json({ message: 'User not found' });
+        const follower = await getcreatorFollower({ creatorId:userId });
+        const following = await getcreatorFollowing({creatorId});
+        if(!following || !follower){
+            return response.status(204).json({message:'Post Not Found'})
         }
 
-        const alreadyFollowing = following.count.includes(id); // is userId following id?
-        const index = following.count.indexOf(id);
-        const index2 = follower.count.indexOf(userId);
-        if (!alreadyFollowing) {
-        // FOLLOW
-        following.count.push(id);      // Add id to userId's following
-        follower.count.push(userId);   // Add userId to id's followers
-        await incfollowingCount({ userId }); // Increase following count of userId
-        await incfollowerCount({ userId: id }); // Increase follower count of id
+        const index = following.count.indexOf(userId);
+        const index2 = follower.count.findIndex((id: ObjectId) => id.toString() === creatorId.toString());
+        if (index === -1) {
+            return response.status(200).json({
+            message: "you Liked this post",
+            success:true
+        })
         } else {
-        // UNFOLLOW
-        following.count = following.count.splice(index, 1);
-        follower.count = follower.count.splice(index2, 1);
-        await decfollowingCount({ userId });
-        await decfollowerCount({ userId: id });
+            following.count.splice(index, 1); // Unfollow
+            follower.count.splice(index2, 1);
+            const postlikecount = await decfollowingCount({creatorId});
+            const postlikecounts = await decfollowerCount({creatorId:userId});
         }
-
+        
         await following.save();
         await follower.save();
-
         return response.status(200).json({
-        message: alreadyFollowing ? 'Unfollowed successfully' : 'Followed successfully',
-        success: true
-        });
+            message: "you Liked this post",
+            success:true
+        })
     } catch (error) {
         response.status(500).json({
             message: "Internal server error",

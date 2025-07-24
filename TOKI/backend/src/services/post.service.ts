@@ -73,56 +73,56 @@ export const  declikeCount = async ({PostId}:{PostId:any}) => {
  return
 }
 
-export const  getuserfollowing = async ({userId}:{userId:string}) => {
-  if(!userId) return
-  const file = await following.findOne({
-    userID: userId
-  });
- return file
-}
-
-export const  incfollowingCount = async ({userId}:{userId:string}) => {
-  if(!userId) return
-  const updatedPostCount = await following.findOneAndUpdate(
-    { userID: userId },           // Find by owner ID
-    { $inc: { folloingCount: 1 } },  // increment by 1
-    { new: true }                 // Return the updated document
-  );
- return
-}
-
-export const  decfollowingCount = async ({userId}:{userId:string}) => {
-  if(!userId) return
-  const updatedPostCount = await following.findOneAndUpdate(
-    { userID: userId },           // Find by owner ID
-    { $inc: { folloingCount: -1 } },  // Decrement by 1
-    { new: true }                 // Return the updated document
-  );
- return
-}
-
-export const  getuserfollower = async ({userId}:{userId:string}) => {
-  if(!userId) return
+export const  getcreatorFollower = async ({creatorId}:{creatorId:any}) => {
+  if(!creatorId) return
   const file = await follower.findOne({
-    userID: userId
+    userID: creatorId
   });
  return file
 }
 
-export const  incfollowerCount = async ({userId}:{userId:string}) => {
-  if(!userId) return
+export const  getcreatorFollowing = async ({creatorId}:{creatorId:any}) => {
+  if(!creatorId) return
+  const file = await following.findOne({
+    userID: creatorId
+  });
+ return file
+}
+
+export const  incfollowerCount = async ({creatorId}:{creatorId:any}) => {
+  if(!creatorId) return
   const updatedPostCount = await follower.findOneAndUpdate(
-    { userID: userId },           // Find by owner ID
+    { userID: creatorId },           // Find by owner ID
+    { $inc: { followerCount: 1 } },  // increment by 1
+    { new: true }                 // Return the updated document
+  );
+ return
+}
+
+export const  decfollowerCount = async ({creatorId}:{creatorId:any}) => {
+  if(!creatorId) return
+  const updatedPostCount = await follower.findOneAndUpdate(
+    { userID: creatorId },           // Find by owner ID
+    { $inc: { followerCount: -1 } },  // Decrement by 1
+    { new: true }                 // Return the updated document
+  );
+ return
+}
+
+export const  incfollowingCount = async ({creatorId}:{creatorId:any}) => {
+  if(!creatorId) return
+  const updatedPostCount = await following.findOneAndUpdate(
+    { userID: creatorId },           // Find by owner ID
     { $inc: { folloingCount: 1 } },  // increment by 1
     { new: true }                 // Return the updated document
   );
  return
 }
 
-export const  decfollowerCount = async ({userId}:{userId:string}) => {
-  if(!userId) return
-  const updatedPostCount = await follower.findOneAndUpdate(
-    { userID: userId },           // Find by owner ID
+export const  decfollowingCount = async ({creatorId}:{creatorId:any}) => {
+  if(!creatorId) return
+  const updatedPostCount = await following.findOneAndUpdate(
+    { userID: creatorId },           // Find by owner ID
     { $inc: { folloingCount: -1 } },  // Decrement by 1
     { new: true }                 // Return the updated document
   );

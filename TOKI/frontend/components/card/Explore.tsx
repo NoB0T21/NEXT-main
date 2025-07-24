@@ -23,6 +23,9 @@ interface Posts {
     following:{
             count:string[]
         },
+    follower:{
+            count:string[]
+        },
     user:{
       id: string,
       picture: string,
@@ -48,6 +51,9 @@ const Explore = () => {
             likeCount: 0
         }, 
         following:{
+                count:[]
+        },
+        follower:{
                 count:[]
         },
         user:{
@@ -98,6 +104,9 @@ const Explore = () => {
       useEffect(() => {
         fetchMore();
     }, [skip]);
+    useEffect(() => {
+        console.log(following)
+    }, [post]);
 
        const likePost = async () => {    
              if(!token){
@@ -165,7 +174,7 @@ const Explore = () => {
         {posts.map((post)=>(
             <div 
               key={post.id}
-              onClick={()=>{setPost(post);setLikeCount(post.like.likeCount);setLike(post.like.like);setFollowing(post.following.count)}}
+              onClick={()=>{setPost(post);setLikeCount(post.like.likeCount);setLike(post.like.like);setFollowing(post.follower.count);console.log(posts)}}
               className='w-full h-35'>
                 <Image
                     src={post.pictureURL}
@@ -189,6 +198,9 @@ const Explore = () => {
                     likeCount: 0
                 }, 
                 following:{
+                        count:[]
+                }, 
+                follower:{
                         count:[]
                 },
                 user:{

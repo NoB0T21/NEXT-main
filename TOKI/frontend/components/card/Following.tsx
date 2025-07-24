@@ -21,38 +21,40 @@ interface User {
   }
 }
 const Following = ({user}:any) => {
+  console.log(user)
   const token = Cookies.get('token');
-  const userID = Cookies.get('user') || '';
+  const userId = Cookies.get('user') || '';
   const [following, setFollowing ] = useState<string[]>(user.follower.count)
 
-    const followuser = async ({userId}:{userId:string}) => {    
-        if(!token){
-          return
-        }
-                 const data = await api.get(`/post/follow/${userId}`,
-                   {
-                     headers: {
-                       Authorization: `Bearer ${token}`,
-                     },
-                     withCredentials: true,
-                   }
-                 );
-                 if(data.status === 200) {
-                   const currentLikes = Array.isArray(following) ? following : [];
-                   const index = currentLikes.indexOf(userID);
-                   let updatedFollow;
-           
-                   if (index === -1) {
-                     updatedFollow = [...currentLikes, userID]; // Add like
-                     //setLikeCount(prev => prev + 1);
-                   } else {
-                     updatedFollow = currentLikes.filter(id => id !== userID); // Remove like
-                     //setLikeCount(prev => (prev > 0 ? prev - 1 : 0));
-                   }
-           
-                   setFollowing(updatedFollow);
-                 }
+    const followuser = async ({CreatorId}:{CreatorId:string}) => {    
+             if(!token){
+               return
              }
+             
+             const data = await api.get(`/post/follow/${CreatorId}`,
+               {
+                 headers: {
+                   Authorization: `Bearer ${token}`,
+                 },
+                 withCredentials: true,
+               }
+             );
+             if(data.status === 200) {
+               const currentLikes = Array.isArray(following) ? following : [];
+               const index = currentLikes.indexOf(userId);
+               let updatedFollow;
+       
+               if (index === -1) {
+                 updatedFollow = [...currentLikes, userId]; // Add like
+                 //setLikeCount(prev => prev + 1);
+               } else {
+                 updatedFollow = currentLikes.filter(id => id !== userId); // Remove like
+                 //setLikeCount(prev => (prev > 0 ? prev - 1 : 0));
+               }
+       
+               setFollowing(updatedFollow);
+             }
+         }
 
   return (
         <div key={user.id} className="bg-zinc-900 px-7 rounded-md w-full h-15 overflow-hidden">
@@ -67,7 +69,7 @@ const Following = ({user}:any) => {
                             />
                             {user.name}
                         </div>
-                        <div className="px-2 border-1 rounded-md" onClick={()=>followuser({userId:user.id})}>{following.includes(userID)?'Following':'Follow'}</div>
+                        <div className="px-2 border-1 rounded-md" onClick={()=>followuser({CreatorId:user.id})}>{following.includes(userId)?'Following':'Follow'}</div>
                     </div>
                 </div>
   )

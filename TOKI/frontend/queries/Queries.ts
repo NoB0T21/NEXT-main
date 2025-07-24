@@ -94,6 +94,9 @@ export  const getexplorepostpageintion = gql`
             following{
                 count
             }
+            follower{
+                count
+            }
             user{
                 id
                 name
@@ -110,9 +113,11 @@ export  const getfollowinguser = gql`
             name
             picture
             follower{
+                userID
                 count
             }
             following{
+                userID
                 count
             }
         }
