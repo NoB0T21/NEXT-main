@@ -1,13 +1,22 @@
 import { DashboardHeader } from '@/components/navigation/Header'
+import { ApolloWrapper } from '@/context/ApolloClientProvider'
+import Home from '@/components/card/Home'
 import React from 'react'
+import StoryBar from '@/components/StoryBar'
+import { getuserfollowing } from '@/utils/serverActions'
 
-const Home = () => {
+const page = async () => {
+  const usersFollowing = await getuserfollowing()
+
   return (
     <div>
       <DashboardHeader/>
-      heloyyy
+      <StoryBar/>
+      <ApolloWrapper>
+          <Home ids={usersFollowing}/>
+      </ApolloWrapper>
     </div>
   )
 }
 
-export default Home
+export default page

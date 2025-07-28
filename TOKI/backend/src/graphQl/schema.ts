@@ -177,6 +177,22 @@ const RootQuery = new GraphQLObjectType({
                 .skip(args.offset || 0)
                 .limit(args.limit || 5)
             }
+        },
+        homeposts:{
+            type:new GraphQLList(PostType),
+            args: {
+                offset: { type: GraphQLInt },
+                limit: { type: GraphQLInt },
+                homeOwner: { type: new  GraphQLList(GraphQLID) },
+            },
+
+            resolve: async (parent,args) => {
+                const randomPosts = await posts.find({owner: { $in: args.homeOwner }})
+                .skip(args.offset || 0)
+                .limit(args.limit || 5)
+
+                return randomPosts.sort(() => Math.random()-0.6);
+            }
         }
     }
 })

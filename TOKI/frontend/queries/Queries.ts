@@ -123,3 +123,30 @@ export  const getfollowinguser = gql`
         }
         }
 `
+
+export  const gethomepostpageintion = gql`
+      query getfolowingPost($homeOwner:[ID], $offset: Int, $limit: Int){  
+        homeposts(homeOwner: $homeOwner, offset: $offset, limit: $limit){
+           id
+            pictureURL
+            creator
+            title
+            owner
+            tags
+            message
+            originalname
+            like{
+                like
+                likeCount
+            }
+            following{
+                count
+            }
+            user{
+                id
+                name
+                picture
+            }
+        }
+    }
+`
