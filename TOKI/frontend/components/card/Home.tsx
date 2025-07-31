@@ -47,7 +47,7 @@ const Home = ({ids}:{ids:string[]}) => {
   return (
     <div onScroll={handleScroll} className='gap-1 grid grid-cols-1 w-full h-[80vh] overflow-y-scroll'>
       {posts.map((post:Posts2)=>(
-        <PostCard key={post.id} followings={post.following.count} file={post} profile={post.user.picture} name={post.user.name} userID={post.user.id}/>
+        <PostCard key={post.id} followings={post.follower.count} file={post} profile={post.user.picture} name={post.user.name} userID={post.user.id}/>
       ))}
     </div>
   )

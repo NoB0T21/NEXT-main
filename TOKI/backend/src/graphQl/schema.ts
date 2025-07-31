@@ -5,8 +5,9 @@ import following from "../models/user.following.model"
 import follower from "../models/user.followers.model"
 import like from '../models/like.model'
 import PostCount from "../models/post.count.model"
+import storyModel from "../models/user.story.model"
 
-
+const now = new Date();
 
 const UserFollowingType = new GraphQLObjectType({
     name:'UserFollowing',
@@ -117,6 +118,40 @@ const PostType:any = new GraphQLObjectType({
     })
 })
 
+const StoryType = new GraphQLObjectType({
+    name:'Userstory',
+    fields:()=>({
+        userID:{type: GraphQLString},
+        imageUrl:{type: GraphQLString},
+        createdAt:{type: GraphQLString},
+    })
+})
+
+ const UserStoryType = new GraphQLObjectType({
+     name:'UserStory',
+     fields:()=>({
+         id:{type: GraphQLID},
+         name:{type: GraphQLString},
+         email:{type: GraphQLString},
+         picture:{type: GraphQLString},
+         follower:{
+             type:UserFollowersType,
+             resolve(parent,args){
+                 return follower.findOne({userID:parent.id})
+             }
+         },
+         stories: {
+            type: new GraphQLList(StoryType),
+            resolve(parent,args){
+                return storyModel.find({
+                userID: parent.id,
+                expiresAt: { $gt: now }
+                }).sort({ createdAt: -1 })
+            }
+            }
+     })
+ })
+
 const RootQuery = new GraphQLObjectType({
     name:'RootQuertType',
     fields:{
@@ -193,7 +228,26 @@ const RootQuery = new GraphQLObjectType({
 
                 return randomPosts.sort(() => Math.random()-0.6);
             }
-        }
+        },
+        userstories: {
+            type: new GraphQLList(UserStoryType),
+            args: {
+                following: { type: new GraphQLList(GraphQLID) },
+            },
+            resolve: async (parent, args) => {
+                const users = await user.find({ _id: { $in: args.following } });
+                const usersWithStories = await Promise.all(
+                users.map(async (u) => {
+                    const hasStory = await storyModel.exists({
+                    userID: u._id,
+                    expiresAt: { $gt: now },
+                    });
+                    return hasStory ? u : null;
+                })
+                );
+                return usersWithStories.filter(Boolean);;
+            }
+            }
     }
 })
 

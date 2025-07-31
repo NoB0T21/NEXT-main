@@ -56,3 +56,14 @@ export const postFormapi = async ({form}:{form:any}) => {
     })
     return data
 }
+
+export const poststoryapi = async ({form}:{form:any}) => {
+    const token = Cookies.get('token');
+    const data = await api.post('/story/create',form,{
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true
+    })
+    return data
+}

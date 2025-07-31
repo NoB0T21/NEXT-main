@@ -30,15 +30,15 @@ const ProfileData = ({picture,posts,follower,following,followerlist,followinglis
   const fetchMorefollowing = async () => {
       if (!hasMore) return;
 
-      const { data } = await getFollowingList({followinglist,skip,getuserList})
+      const  data  = await getFollowingList({followinglist,skip,getuserList})
       
-      const newPosts = data?.followinguser || [];
+      const newPosts = data || [];
       if (newPosts.length < 10 ) {
         setHasMore(false); 
       }
       if (newPosts.length) {
         setUsersfollowing((prev) => {
-          const merged = [...prev, ...data.followinguser];
+          const merged = [...prev, ...data];
           const unique = Array.from(
             new Map(merged.map((p) => [p.id, p])).values()
           );
@@ -58,7 +58,6 @@ const ProfileData = ({picture,posts,follower,following,followerlist,followinglis
   useEffect(() => {
     fetchMorefollowing();
   }, [skip]);
-
   return (
     <>
       <div className='flex justify-between sm:justify-start items-center sm:gap-6 bg-gradient-to-tl from-[#1A1C22] to-[#5A5C6A] backdrop-blur-5xl px-5 rounded-md w-full sm:w-90 lg:w-100 h-20'>

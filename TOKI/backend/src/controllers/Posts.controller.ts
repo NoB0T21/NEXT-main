@@ -116,7 +116,6 @@ export const likeFile = async (request: Request, response: any) => {
 export const followuser = async (request: Request, response: Response) => {
     const creatorId = new ObjectId(request.params.id);
     const userId = request.user._id; // assuming req.user._id is available
-    console.log('userId')
     try {
         if (!creatorId || !userId) {
             return response.status(400).json({

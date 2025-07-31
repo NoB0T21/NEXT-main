@@ -142,6 +142,9 @@ export  const gethomepostpageintion = gql`
             following{
                 count
             }
+                follower{
+                count
+            }
             user{
                 id
                 name
@@ -149,4 +152,33 @@ export  const gethomepostpageintion = gql`
             }
         }
     }
+`
+
+export  const getuserstory = gql`
+      query getStory($following:[ID]) {
+  userstories(following: $following) {
+    id
+    name
+    picture
+  }
+}
+`
+
+export  const getstory = gql`
+      query getStory($following:[ID]) {
+  userstories(following: $following) {
+    id
+    name
+    picture
+    follower {
+      userID
+      count
+    }
+    stories {
+      userID
+      imageUrl
+      createdAt
+    }
+  }
+}
 `

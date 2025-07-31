@@ -1,3 +1,5 @@
+import { string } from "zod/v4";
+
 export interface Auth {
   name?: string;
   email?: string;
@@ -65,6 +67,9 @@ export interface Posts2 {
   following:{
     count:string[]
   },
+  follower:{
+    count:string[]
+  },
   user:{
     id: string,
     picture: string,
@@ -100,4 +105,18 @@ export type StoryElement = {
   y?: number
   width?: number
   height?: number
+}
+
+export interface Story {
+  id:string,
+  name:string
+    picture:string
+    follower: {
+      count:string[]
+    }
+    stories:[{
+      userID:string
+      imageUrl:string
+      createdAt:string
+    }]
 }
