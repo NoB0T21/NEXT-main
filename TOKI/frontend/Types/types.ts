@@ -120,9 +120,18 @@ export interface Story {
       userID:string
       imageUrl:string
       createdAt:string
+      SongId: string,
+      Song: string,
+      start: string,
+      end: string
       views:{
         count:string[]
         storyviewsCount:number
+      }
+      song:{
+        title: String,
+        artist: String,
+        previewUrl: String,
       }
     }]
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { convertFileToUrl, fetchAICompletion, fetchAITegs } from "@/utils/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PulseLoader } from "react-spinners";
 import { z } from "zod";
 import { api } from "@/utils/api";
@@ -21,7 +21,7 @@ const formSchema = z.object({
 
 const UploadForm = () => {
     const router = useRouter()
-    const user = JSON.parse(localStorage.getItem('user') || '')
+    const [user,SetUser] = useState<any>()
     const [formData, setFormData] = useState<{
         creator: string;
         title?: string;
@@ -49,40 +49,52 @@ const UploadForm = () => {
     const [responseMsg,setResponseMsg] = useState('')
     const [tostType,setTostType] = useState('warningMsg')
     const [isGenerating, setIsGenerating] = useState(false);
-
-
+    
+    
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let vlue =e.target.value
         setInputValue(e.target.value);
         if (!vlue.includes("/")) setShowtag(false)
-        if (vlue.includes("/")) setShowtag(true)
-    };
-
-    const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter' || e.key === ',' && inputValue.trim() !== '') {
-        const newTags = inputValue
-            .split(',')
-            .map(tag => tag.trim())
-            .filter(tag => tag.length > 0)
-            .map(tag => (tag.startsWith('#') ? tag : `#${tag}`))
-            .filter(tag => !(formData.tags|| []).includes(tag));
-        if (newTags.length > 0) {
-            setFormData(prev => ({
-            ...prev,
-            tags: [...(prev.tags|| []), ...newTags],
+            if (vlue.includes("/")) setShowtag(true)
+            };
+        
+        const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === 'Enter' || e.key === ',' && inputValue.trim() !== '') {
+                const newTags = inputValue
+                .split(',')
+                .map(tag => tag.trim())
+                .filter(tag => tag.length > 0)
+                .map(tag => (tag.startsWith('#') ? tag : `#${tag}`))
+                .filter(tag => !(formData.tags|| []).includes(tag));
+                if (newTags.length > 0) {
+                    setFormData(prev => ({
+                        ...prev,
+                        tags: [...(prev.tags|| []), ...newTags],
             }));
         }
-
+        
         setInputValue('');
-      }
-    };
+    }
+};
 
-    const removeTag = (indexToRemove: number) => {
-        setFormData((prev) => ({
-            ...prev,
-            tags: (prev.tags|| []).filter((_, index) => index !== indexToRemove),
+const removeTag = (indexToRemove: number) => {
+    setFormData((prev) => ({
+        ...prev,
+        tags: (prev.tags|| []).filter((_, index) => index !== indexToRemove),
         }));
     };
+    
+useEffect(() => {
+    const use = JSON.parse(localStorage.getItem('user') || '')
+    SetUser(use)
+    setFormData({
+        creator:use?.name, 
+        title:'',
+        message:'',
+        tags:[],
+        owner:use?._id,
+    })
+}, []);
 
      const clear = () => {
         setError({files:''});
@@ -125,6 +137,7 @@ const UploadForm = () => {
                 files: errorMessages.files?.[0],
             })
             setLoading(false)
+            console.log(formData)
             return
         }
 

@@ -7,6 +7,7 @@ import like from '../models/like.model'
 import PostCount from "../models/post.count.model"
 import storyModel from "../models/user.story.model"
 import storyview from "../models/story.views"
+import songs from "../models/songs.model"
 
 const now = new Date();
 
@@ -51,6 +52,15 @@ const StoryviewType = new GraphQLObjectType({
         storyID:{type: GraphQLString},
         count:{type: new GraphQLList(GraphQLString)},
         storyviewsCount:{type:GraphQLInt}
+    })
+})
+
+const SongType = new GraphQLObjectType({
+    name:'song',
+    fields:()=>({
+        title:{type: GraphQLString},
+        artist:{type: GraphQLString},
+        previewUrl:{type: GraphQLString}
     })
 })
 
@@ -139,6 +149,12 @@ const StoryType = new GraphQLObjectType({
             type:StoryviewType,
             resolve(parent,args){
                 return storyview.findOne({storyID:parent._id})
+            }
+        },
+        song:{
+            type:SongType,
+            resolve(parent,args){
+                return songs.findOne({_id:parent.SongId})
             }
         }
     })

@@ -4,10 +4,12 @@ import { usePathname } from "next/navigation"
 import { CreatePost, Globe, GlobeFill, Home, HomeFill } from "../Icons"
 import Link from "next/link"
 import Image from "next/image"
+import { useEffect, useState } from "react"
 
 const SidebarBtn = ({pathname,name}:{pathname: string, name: string}) => {
    const path = usePathname()
-   const user = JSON.parse(localStorage.getItem('user') || '')
+   const [user,SetUser] = useState<any>()
+   useEffect(()=>{SetUser(JSON.parse(localStorage.getItem('user') || ''))},[])
 
   return (
     <>
@@ -18,7 +20,7 @@ const SidebarBtn = ({pathname,name}:{pathname: string, name: string}) => {
             {name==='Create' && <CreatePost/>}
             {name==='Profile' && (
               <div className={`${path===pathname?'bg-gradient-to-r from-[#2EF6FF] to-[#aafcff]':'hover:bg-zinc-700 opacity-75'} p-0.5 rounded-full `}>
-                <Image className="bg-[#1a1e23] rounded-full" src={user.picture} width={100} height={100} alt="profile"/>
+                <Image className="bg-[#1a1e23] rounded-full" src={user?.picture? user.picture:'https://yxbboqcacbihxherpisb.supabase.co/storage/v1/object/public/toki//ecbfe5f8-d510-4f77-80da-a568ec9a9d8c-profile.png'} width={100} height={100} alt="profile"/>
               </div>
             )}
           </div>

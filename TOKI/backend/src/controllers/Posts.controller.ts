@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 import uuid from "uuid4";
 import supabase from "../Db/supabase";
-import { ObjectId } from 'mongodb';
 import { createfile,decfollowerCount,decfollowingCount,declikeCount, getcreatorFollower, getcreatorFollowing, getLikePost,incfollowerCount,incfollowingCount,inclikeCount, LikePost } from "../services/post.service";
-
-
 
 export const uploadFile = async (request: Request, response: Response) => {
     const { file } = request;
@@ -114,7 +111,7 @@ export const likeFile = async (request: Request, response: any) => {
 };
 
 export const followuser = async (request: Request, response: Response) => {
-    const creatorId = new ObjectId(request.params.id);
+    const creatorId:any =(request.params.id);
     const userId = request.user._id; // assuming req.user._id is available
     try {
         if (!creatorId || !userId) {
@@ -131,8 +128,8 @@ export const followuser = async (request: Request, response: Response) => {
             return response.status(404).json({ message: "User not found" });
         }
 
-        const index = follower.count.findIndex((id: ObjectId) => id.toString() === userId.toString());
-        const index2 = following.count.findIndex((id: ObjectId) => id.toString() === creatorId.toString());
+        const index = follower.count.findIndex((id:any) => id.toString() === userId.toString());
+        const index2 = following.count.findIndex((id:any) => id.toString() === creatorId.toString());
 
         if (index === -1 && index2 === -1) {
             follower.count.push(userId);
@@ -163,7 +160,7 @@ export const followuser = async (request: Request, response: Response) => {
 };
 
 export const removeuser = async (request: Request, response: any) => {
-    const creatorId = new ObjectId(request.params.id);
+    const creatorId:any = (request.params.id);
     const userId = request.user._id
     if (!creatorId||!userId) {
         response.status(400).json({
@@ -181,7 +178,7 @@ export const removeuser = async (request: Request, response: any) => {
         }
 
         const index = following.count.indexOf(userId);
-        const index2 = follower.count.findIndex((id: ObjectId) => id.toString() === creatorId.toString());
+        const index2 = follower.count.findIndex((id:any) => id.toString() === creatorId.toString());
         if (index === -1) {
             return response.status(200).json({
             message: "you Liked this post",

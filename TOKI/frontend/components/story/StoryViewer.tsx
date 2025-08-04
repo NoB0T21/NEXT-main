@@ -16,18 +16,19 @@ interface StoryViewerProps {
 
 const StoryViewer: React.FC<StoryViewerProps> = ({ stories,routes}) => {
   const route = useRouter()
-if(stories.length === 0)route.push('/story')
+  
   const [isPaused, setIsPaused] = useState(false);
   const controls = useAnimation();
   const [userIndex, setUserIndex] = useState(0)
   const [progressKey, setProgressKey] = useState(0)
   const [storyIndex, setStoryIndex] = useState(0)
+
   
   const currentUser = stories[userIndex]
   const currentStory = currentUser.stories[storyIndex]
-
+  
   const nextStory = async () => {
-  await addviewStory({id:stories[userIndex].stories[storyIndex].id})
+    await addviewStory({id:stories[userIndex].stories[storyIndex].id})
     if (!currentUser) return
     if (storyIndex < currentUser.stories.length - 1) {
       setStoryIndex((prev) => prev + 1)
@@ -41,44 +42,47 @@ if(stories.length === 0)route.push('/story')
       routes!=='/nortoute'?route.push(routes):route.refresh()
     }
   }
-
+  
   if (!currentStory) return <div>No more stories</div>
-
+  
   const prevStory = () => {
-  if (!currentUser || !currentStory) return;
-
-  if (storyIndex > 0) {
-    setStoryIndex((prev) => prev - 1);
-    setProgressKey((prev) => prev - 1);
-  } else if (userIndex > 0) {
-    const previousUser = stories[userIndex - 1];
-    const lastStoryIndex = previousUser.stories.length - 1;
-    setUserIndex((prev) => prev - 1);
-    setStoryIndex(lastStoryIndex);
-    setProgressKey((prev) => prev - 1);
-  } else {
-    // Already at the first story of the first user
-    setStoryIndex(0);
-    setUserIndex(0);
-    setProgressKey(0);
-  }
-};
-
-useEffect(() => {
-  if (!currentStory) return;
-
-  controls.set({ width: 0 }); // Reset animation
-  if (!isPaused) {
-    controls.start({
-      width: '100%',
-      transition: { duration: 6 },
-    });
-  }else {
-    controls.stop(); // Pauses the animation
-  }
-}, [userIndex, storyIndex, isPaused]);
-
-
+    if (!currentUser || !currentStory) return;
+    
+    if (storyIndex > 0) {
+      setStoryIndex((prev) => prev - 1);
+      setProgressKey((prev) => prev - 1);
+    } else if (userIndex > 0) {
+      const previousUser = stories[userIndex - 1];
+      const lastStoryIndex = previousUser.stories.length - 1;
+      setUserIndex((prev) => prev - 1);
+      setStoryIndex(lastStoryIndex);
+      setProgressKey((prev) => prev - 1);
+    } else {
+      // Already at the first story of the first user
+      setStoryIndex(0);
+      setUserIndex(0);
+      setProgressKey(0);
+    }
+  };
+  
+  useEffect(() => {
+    if (!currentStory) return;
+    
+    controls.set({ width: 0 }); // Reset animation
+    if (!isPaused) {
+      controls.start({
+        width: '100%',
+        transition: { duration: 15 },
+      });
+    }else {
+      controls.stop(); // Pauses the animation
+    }
+  }, [userIndex, storyIndex, isPaused]);
+  
+  useEffect(()=>{
+    if(stories.length === 0 || !stories)route.push('/story')
+  },[])
+  
   return (
     <div className="z-50 w-full h-full">
       <div className="block relative content-center bg-[#1a1e23] rounded-xl w-full h-full overflow-hidden">
@@ -134,6 +138,7 @@ useEffect(() => {
             className="rounded-full size-8 object-cover"
           />
           <div className="font-bold">{currentUser.name}</div>
+          <div>{currentStory.song.artist}</div>
         </div>
         {routes === '/story/ownview' && <div className='top-2 right-2 absolute'>
           <button

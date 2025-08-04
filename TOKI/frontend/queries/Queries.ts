@@ -183,6 +183,11 @@ export  const getstory = gql`
         count
         storyviewsCount
       }
+      song{
+        title
+        artist
+        previewUrl
+      }  
     }
   }
 }

@@ -8,7 +8,7 @@ import storyview from "../models/story.views";
 
 export const AddStory = async (req:Request,res:Response) => {
     const { file } = req
-    const {userID} = req.body
+    const {userID,SongId,start,end} = req.body
     if (!file || !userID) {
         res.status(400).json({
             message: "Require all fields",
@@ -45,7 +45,10 @@ export const AddStory = async (req:Request,res:Response) => {
                 userID,
                 path: uniqueFilename,
                 originalname: file?.originalname || "",
-                imageUrl: publicUrlData.data.publicUrl || ""
+                imageUrl: publicUrlData.data.publicUrl || "",
+                SongId,
+                start,
+                end
             });
 
             const newsto = await storyview.create({
