@@ -45,7 +45,7 @@ const Home = ({ids}:{ids:string[]}) => {
   }, [skip]);
   
   return (
-    <div onScroll={handleScroll} className='gap-1 grid grid-cols-1 w-full h-[80vh] overflow-y-scroll'>
+    <div onScroll={handleScroll} className='gap-1 rounded-md px-2 grid grid-cols-1 w-full bg-[#1a1e23] pb-5 h-[78vh] overflow-y-scroll'>
       {posts.map((post:Posts2)=>(
         <PostCard key={post.id} followings={post.follower.count} file={post} profile={post.user.picture} name={post.user.name} userID={post.user.id}/>
       ))}

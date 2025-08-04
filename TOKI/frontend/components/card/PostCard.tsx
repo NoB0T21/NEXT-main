@@ -54,7 +54,7 @@ const PostCard = ({file, profile, name, userID,followings}:{file:Posts2, profile
 
   return (
     <>
-      <div key={file.id} className="relative bg-black my-1 sm:my-6 py-3 rounded-md w-full md:w-160 h-[60vh] sm:h-[70vh] overflow-y-auto snap-always snap-center scrollbar">
+      <div key={file.id} className="relative bg-black my-1 sm:my-3 py-1 rounded-md w-full md:w-160 max-w-[700px]">
           <div className="flex justify-between items-center w-full">
             <div className="flex items-center my-3 px-2">
               <Image
@@ -62,20 +62,21 @@ const PostCard = ({file, profile, name, userID,followings}:{file:Posts2, profile
                 alt="Post"
                 width={500}
                 height={500}
-                className="rounded-full size-[30px] sm:size-11 object-cover"
+                className="rounded-full size-[30px] sm:size-10 object-cover"
               />
-                <div className="flex items-center gap-3 px-2">
+                <div className="flex text-sm md:text-md items-center gap-3 px-2">
                   <div className="truncate">{name}</div>
                 </div>
             </div>
-            <div className="flex justify-between items-center p-5 w-full h-full">
+
+            <div className="flex cursor-pointer text-sm justify-between items-center p-5 w-full h-full">
                 {userID===user?
                 <p onClick={()=>setShow(true)}>...</p>
                 :
                 <motion.div
                   whileTap={{ scale: 0.7 }}
                   onClick={followuser}
-                  className="right-5 absolute flex items-center px-2 border-1 rounded-md"
+                  className="right-5 absolute animated-gradient hover:animate-wiggle flex items-center px-2 border-1 rounded-md"
                 >{following?.includes(user)?'Following':'Follow'}</motion.div>}
             </div>
           </div>
@@ -84,15 +85,15 @@ const PostCard = ({file, profile, name, userID,followings}:{file:Posts2, profile
               alt="Post"
               width={3840}
               height={2160}
-              className="rounded-md w-full h-2/3 object-cover"
+              className="rounded-md w-full object-cover"
           />
-        <div className="px-1 py-2 w-full h-25">
+        <div className="px-1 py-2 w-full ">
           <motion.div
             whileTap={{ scale: 0.7 }}
             onClick={() =>likePost()} 
             className="flex gap-3 w-7"
           >
-            <div className="flex gap-1"><div className={`size-6 sm:size-7 `}>{like?.includes(user)?<LikeFill/>:<Like/>}</div><p className='font-semibold'>{likecount}</p></div>
+            <div className="flex gap-1"><div className={`size-6`}>{like?.includes(user)?<LikeFill/>:<Like/>}</div><p className='text-[#b0bec5]'>{likecount}</p></div>
           </motion.div>
           <div className='space-x-1 mx-1 mt-1 p-1 truncate'>
             {file.tags.map((tag, index) => (
@@ -101,9 +102,7 @@ const PostCard = ({file, profile, name, userID,followings}:{file:Posts2, profile
               </span>
             ))}
           </div>
-          <div className="">
             <Readmore text={file.message} maxLength={30} />
-          </div>
         </div>
       </div>
       {show && 

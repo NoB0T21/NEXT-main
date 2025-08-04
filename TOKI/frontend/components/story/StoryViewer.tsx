@@ -138,12 +138,12 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ stories,routes}) => {
             className="rounded-full size-8 object-cover"
           />
           <div className="font-bold">{currentUser.name}</div>
-          <div>{currentStory.song.artist}</div>
+          {currentStory.song && <div>{currentStory.song.artist}</div>}
         </div>
         {routes === '/story/ownview' && <div className='top-2 right-2 absolute'>
           <button
             onClick={() => setIsPaused((prev) => !prev)}
-            className="size-8 text-white"
+            className="size-6 text-white"
           >
             <Menu/>
           </button>

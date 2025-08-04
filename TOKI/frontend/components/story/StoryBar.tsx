@@ -6,11 +6,11 @@ import Link from 'next/link';
 const StoryBar = ({stories}:{stories:Story[]}) => {
   
   return (
-    <div className='w-full h-25'>
+    <div className='w-full text-sm mb-0.5 h-25'>
       Stories
-      <div className='flex gap-3 h-full'>
-        <Link href={'/story/ownview'} className='space-y-3'>
-          <div className='block content-center border rounded-full size-12 text-[#2EF6FF] text-2xl text-center align-middle'>+</div>
+      <div className='flex mt-1 gap-3 h-full'>
+        <Link href={'/story/ownview'} className='space-y-1.5 flex flex-col items-center'>
+          <div className='block content-center border rounded-full size-10 text-[#2EF6FF] text-2xl text-center align-middle'>+</div>
           <p className='text-[#b0bec5] text-sm'>Your story</p>
         </Link>
         <div className='flex gap-3 w-[90%] h-full overflow-x-auto'>
