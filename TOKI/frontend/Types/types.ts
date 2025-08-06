@@ -15,6 +15,13 @@ export interface Posts {
   message:string,
   title:string,
   tags: string[],
+  song:{
+        title: String,
+        artist: String,
+        previewUrl: String,
+      }
+  start:number;
+  end:number
   like:{
     like: string[]
     likeCount: number
@@ -40,6 +47,13 @@ export interface Post{
     tags:string[],
     pictureURL:string,
     createdAt:string,
+    song:{
+        title: String,
+        artist: String,
+        previewUrl: String,
+      }
+    start:number;
+    end:number
 }
 
 export interface User {
@@ -58,6 +72,13 @@ export interface Posts2 {
   message:string,
   title:string,
   owner:string,
+  song:{
+        title: String,
+        artist: String,
+        previewUrl: String,
+      }
+  start:number;
+  end:number
   tags: [],
   originalname:string,
   like:{
@@ -121,9 +142,8 @@ export interface Story {
       imageUrl:string
       createdAt:string
       SongId: string,
-      Song: string,
-      start: string,
-      end: string
+      start: number,
+      end: number
       views:{
         count:string[]
         storyviewsCount:number
@@ -140,4 +160,14 @@ export interface User3 {
   id: string,
   name: string,
   picture: string
+}
+
+export interface Track {
+  _id: string;
+  title: string;
+  artist: string;
+  previewUrl: string;
+  duration: number;
+  start: number; // user-selected start second
+  end: number;   // user-selected end second
 }

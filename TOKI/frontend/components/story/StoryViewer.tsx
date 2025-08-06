@@ -4,10 +4,10 @@ import { Story } from '@/Types/types'
 import { AnimatePresence, motion, useAnimation } from 'motion/react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import StoryDropdown from './StoryDropdown'
 import { addviewStory } from '@/utils/clientAction'
-import { Menu } from '../Icons'
+import { Menu, Music } from '../Icons'
 
 interface StoryViewerProps {
   stories: Story[]
@@ -22,6 +22,7 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ stories,routes}) => {
   const [userIndex, setUserIndex] = useState(0)
   const [progressKey, setProgressKey] = useState(0)
   const [storyIndex, setStoryIndex] = useState(0)
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   
   const currentUser = stories[userIndex]
@@ -82,6 +83,25 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ stories,routes}) => {
   useEffect(()=>{
     if(stories.length === 0 || !stories)route.push('/story')
   },[])
+
+useEffect(() => {
+  if (!audioRef.current || isPaused) return;
+
+  const a = audioRef.current;
+
+  a.currentTime = currentStory.start;
+  a.play().catch(() => { /* autoplay block */ });
+
+  const onTime = () => {
+    if (a.currentTime >= currentStory.end) {
+      a.pause();
+    }
+  };
+
+  a.addEventListener('timeupdate', onTime);
+  return () => a.removeEventListener('timeupdate', onTime);
+}, [userIndex, storyIndex,isPaused]);
+
   
   return (
     <div className="z-50 w-full h-full">
@@ -137,8 +157,19 @@ const StoryViewer: React.FC<StoryViewerProps> = ({ stories,routes}) => {
             alt="story"
             className="rounded-full size-8 object-cover"
           />
+          <div>
           <div className="font-bold">{currentUser.name}</div>
-          {currentStory.song && <div>{currentStory.song.artist}</div>}
+          {currentStory.song && 
+            <>
+              <div className='flex gap-1 items-center'>
+                  <p className='size-6 animate-spin'><Music/></p>
+                  {currentStory.song.title} - 
+                  <p className='text-sm'>{currentStory.song.artist}</p>
+                </div>
+              <audio autoPlay ref={audioRef} src={`${currentStory.song.previewUrl}`}/>
+            </>
+          }
+          </div>
         </div>
         {routes === '/story/ownview' && <div className='top-2 right-2 absolute'>
           <button

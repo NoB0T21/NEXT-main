@@ -5,7 +5,7 @@ import { createfile,decfollowerCount,decfollowingCount,declikeCount, getcreatorF
 
 export const uploadFile = async (request: Request, response: Response) => {
     const { file } = request;
-    const {creator, title, message, tags, owner } = request.body;
+    const {creator, title, message, tags, owner, SongId,start,end } = request.body;
     if (!file || !owner || !creator) {
         response.status(400).json({
             message: "Require all fields",
@@ -39,7 +39,34 @@ export const uploadFile = async (request: Request, response: Response) => {
         
         const parsedTags = JSON.parse(tags);
 
-        const newFile = await createfile({
+        if(SongId){
+             const newFile = await createfile({
+            creator:creator,
+            title:title,
+            message:message,
+            tags: parsedTags,
+            owner: owner,
+            path: uniqueFilename,
+            originalname: file?.originalname || "",
+            pictureURL: publicUrlData.data.publicUrl || "",
+            SongId,
+            start,
+            end
+        });
+        
+        const Postlike = await LikePost({
+            userID: newFile?._id 
+        })
+
+        response.status(200).json({
+            message: "File Uploaded successfully",
+            newFile,
+            success: true,
+        });
+
+        return
+        }else{
+             const newFile = await createfile({
             creator:creator,
             title:title,
             message:message,
@@ -61,6 +88,7 @@ export const uploadFile = async (request: Request, response: Response) => {
         });
 
         return
+        }
     } catch (error) {
         response.status(500).json({
             message: "Internal server error",

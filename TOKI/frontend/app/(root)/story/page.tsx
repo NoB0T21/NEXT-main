@@ -216,7 +216,7 @@ export default function Page() {
         onClick={()=>setShow(!show)}
       >{show ?'close':'Add'}</motion.div>
 
-      <MusicSelect onSelect={handleTrackSelect}/>
+      <MusicSelect reg={15} onSelect={handleTrackSelect}/>
 
       <AnimatePresence mode='popLayout'>
         

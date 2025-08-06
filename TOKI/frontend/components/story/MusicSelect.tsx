@@ -11,14 +11,16 @@ const RangeSlider = ({
   min = 0,
   max = 100,
   value,
+  reg,
   onChange
 }: {
   min?: number;
   max?: number;
   value: [number, number];
+  reg:number,
   onChange: (val: [number, number]) => void;
 }) => {
-  const MAX_LENGTH = 15;
+  const MAX_LENGTH = reg;
   return (
     <Slider.Root
       className="relative flex items-center w-full h-5 touch-none select-none"
@@ -75,12 +77,12 @@ type Track = {
   duration: number;
 };
 
-const MusicSelect = ({ onSelect }: { onSelect: (track: Track & { start: number, end: number }) => void }) => {
+const MusicSelect = ({ onSelect,reg }: {reg:number, onSelect: (track: Track & { start: number, end: number }) => void }) => {
     const [query, setQuery] = useState('');
     const debouncedQuery = useDebounce(query, 500)
   const [results, setResults] = useState<Track[]>([]);
   const [active, setActive] = useState<Track|null>(null);
-  const [range, setRange] = useState<[number,number]>([0,15]);
+  const [range, setRange] = useState<[number,number]>([0,reg]);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // 1. Search
@@ -92,7 +94,7 @@ const MusicSelect = ({ onSelect }: { onSelect: (track: Track & { start: number, 
   // 2. When user picks a track, init slider
   const pick = (t: Track) => {
     setActive(t);
-    setRange([0, Math.min(15, t.duration)]);   // default 15-second clip
+    setRange([0, Math.min(reg, t.duration)]);   // default 15-second clip
   };
 
   // 3. Sync preview playback with slider
@@ -174,6 +176,7 @@ const MusicSelect = ({ onSelect }: { onSelect: (track: Track & { start: number, 
             min={0}
             max={active?.duration}
             value={range}
+            reg={reg}
             onChange={(r) => setRange(r)}
             />
           <div className="flex justify-between mt-1 text-[#b0bec5] text-sm">

@@ -15,9 +15,9 @@ const StoryBar = ({stories}:{stories:Story[]}) => {
         </Link>
         <div className='flex gap-3 w-[90%] h-full overflow-x-auto'>
           {stories.map((story:Story)=>(
-            <Link key={story.id} href={'/story/view'} className='space-y-3 w-15'>
-              <img src={story.picture} className='block content-center border-2 rounded-full size-12 text-[#2EF6FF]'/>
-              <p className='text-[#b0bec5] text-sm'>{story.name}</p>
+            <Link key={story.id} href={'/story/view'} className='space-y-1 w-15'>
+              <img src={story.picture} className='block content-center border-2 rounded-full size-11 text-[#2EF6FF]'/>
+              <p className='text-[#b0bec5] text-sm'>{story.name.split(' ')[0]}</p>
             </Link>
           ))}
         </div>
