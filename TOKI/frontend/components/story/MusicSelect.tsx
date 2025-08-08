@@ -121,7 +121,7 @@ const MusicSelect = ({ onSelect,reg }: {reg:number, onSelect: (track: Track & { 
   return (
     <div>
       {/* Search Bar */}
-      <div className="flex mb-4">
+      <div className="flex max-w-100 mb-4">
         <input
           className="flex-grow p-2 border-[#3e4a57] border-1 rounded-md"
           placeholder="Search music..."
@@ -133,7 +133,7 @@ const MusicSelect = ({ onSelect,reg }: {reg:number, onSelect: (track: Track & { 
       {/* Results List */}
       <ul className="space-y-2">
         {results.length===0?'':results.map(t => (
-          <li key={t._id} className="flex justify-between items-center text-sm">
+          <li key={t._id} className="flex max-w-100 justify-between items-center text-sm">
             <div className='flex flex-col text-[#b0bec5]'>
                 <span>{t.title}</span>
                 <span className='text-xs'>by {t.artist}</span>   

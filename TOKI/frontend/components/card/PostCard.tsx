@@ -97,28 +97,27 @@ const PostCard = ({file, profile, name, userID,play,followings,onSelect}:{file:P
         whileInView={{opacity:1}}
         onViewportEnter={()=>{audio();setUrl(`${file.song?.previewUrl}`)}}
         onViewportLeave={()=>{setUrl('gg');audioRef.current?.pause()}}
-        viewport={{amount: 0.2 }}
+        viewport={{amount: 0.8 }}
         key={file.id} 
-        className="relative bg-black my-1 sm:my-3 py-1 rounded-md w-full md:w-160 max-w-[700px] snap-start"
+        className="relative bg-black my-1 sm:my-3 py-1 rounded-md w-full sm:w-full md:w-160 xl:w-full sm:max-w-[650px] snap-start"
       >
           <div className="flex justify-between items-center w-full">
-            <div className="flex w-2/3 items-center my-3 px-2">
+            <div className="flex w-2/3 items-center sm:my-3 px-2">
               <Image
                 src={profile}
                 alt="Post"
                 width={500}
                 height={500}
-                className="rounded-full size-[30px] sm:size-10 object-cover"
+                className="rounded-full size-[30px] sm:size-10 xl:size-12 object-cover"
               />
                 <div className="flex flex-col text-sm md:text-md justify-center px-2">
                   <div className="truncate px-2">{name}</div>
                 {file.song &&
                   <>
                     {file.song.previewUrl&&<audio autoPlay ref={audioRef} src={`${url}`}/>}
-                    <div className='flex gap-1 items-center'>
-                        <p className='size-6 animate-spin'><Music/></p>
-                        {file.song.title} - 
-                        <p className='text-sm'>{file.song.artist}</p>
+                    <div className='flex gap-1 text-xs md:text-sm items-center'>
+                        <p className='size-5 sm:size-6 animate-spin'><Music/></p>
+                        <p>{file.song.title} - {file.song.artist}</p>
                       </div>
                   </>
                 }
@@ -136,31 +135,34 @@ const PostCard = ({file, profile, name, userID,play,followings,onSelect}:{file:P
                 >{following?.includes(user)?'Following':'Follow'}</motion.div>}
             </div>
           </div>
+
           <Image
-             
               src={file.pictureURL}
               alt="Post"
               width={3840}
               height={2160}
-              className="rounded-md w-full object-cover"
+              className="rounded-md max-w-screen w-full mt-1 aspect-video object-cover"
           />
-          {file.song?.previewUrl && (
-            <div
-              onClick={() => {
-                if (!audioRef.current) return;
-                if (paused) {
-                  audioRef.current.play();
-                  onSelect(true)
-                } else {
-                  audioRef.current.pause();
-                  onSelect(false)
-                }
-              }}
-              className="absolute bottom-20 right-3 bg-[#1d1c1c9d] z-50 size-10 rounded-full p-1"
-            >
-              {paused ? <Mute /> : <Playaudio />}
-            </div>
-          )}
+          <div className="absolute top-[30px] sm:top-10 xl:top-12 my-7 p-2 flex justify-end items-end w-full aspect-video">
+            {file.song?.previewUrl && (
+              <div
+                onClick={() => {
+                  if (!audioRef.current) return;
+                  if (paused) {
+                    audioRef.current.play();
+                    onSelect(true)
+                  } else {
+                    audioRef.current.pause();
+                    onSelect(false)
+                }}}
+                
+                className=" bg-[#1d1c1c9d] z-50 size-6 sm:size-7 sm:mx-1 rounded-full p-1"
+              >
+                {paused ? <Mute /> : <Playaudio />}
+              </div>
+            )}
+          </div>
+
         <div className="px-1 py-2 w-full ">
           <motion.div
             whileTap={{ scale: 0.7 }}
@@ -180,8 +182,8 @@ const PostCard = ({file, profile, name, userID,play,followings,onSelect}:{file:P
         </div>
       </motion.div>
       {show && 
-        <div className="top-0 left-0 absolute backdrop-blur-sm p-5 w-full h-full">
-          <div className="flex justify-end" onClick={()=>setShow(false)}>X</div>
+        <div className="top-0 left-0 absolute z-50 backdrop-blur-sm py-10 p-5 w-full max-w-[700px] h-full">
+          <div className="flex justify-center rounded-md bg-red-600 size-8 items-center" onClick={()=>setShow(false)}>X</div>
           <FileDropdown title={file.title} url={file.pictureURL} filename={file.originalname}/>
         </div>
       }

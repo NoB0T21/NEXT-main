@@ -218,7 +218,7 @@ const AuthForm = ({type}: {type: FormType}) => {
         <GoogleOAuthProvider clientId={googleID}>
             <GoogleForm/>
         </GoogleOAuthProvider>
-        <Link href={type == 'sign-in' ? '/sign-up' : '/sign-in'} className='flex justify-end my-1 w-2/3 lg:w-1/2 text-blue-400 text-sm text-center hover:underline cursor-pointer'>
+        <Link href={type == 'sign-in' ? '/sign-up' : '/sign-in'} className='flex justify-end my-1 w-2/3 lg:w-1/2 max-w-[500px] text-blue-400 text-sm text-center hover:underline cursor-pointer'>
             <p>{type == 'sign-in' ? "Don't have an account?" : "Already have an account?"} <i className='text-blue-400'>{type == 'sign-in' ? 'Sign Up' : 'Sign In'}</i></p>
         </Link>
         {showToast && <Toasts type={tostType==='warningMsg'?'warningMsg':'infoMsg'} msg={responseMsg}/>}

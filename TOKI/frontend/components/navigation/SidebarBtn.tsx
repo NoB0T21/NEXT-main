@@ -13,8 +13,8 @@ const SidebarBtn = ({pathname,name}:{pathname: string, name: string}) => {
 
   return (
     <>
-        <Link href={`${pathname}`} className={`${(path===pathname)?'text-[#2EF6FF] lg:border-r-8 lg:bg-zinc-700':'hover:bg-zinc-700 text-[#b0bec5]'}  flex justify-center transition-all duration-300 ease-in-out lg:justify-start items-center gap-1 lg:px-6 rounded-md`}>
-          <div className=" block content-center size-9 p-1 transition-(w) duration-200 ease-in-out">
+        <Link href={`${pathname}`} className={`${(path===pathname)?'text-[#2EF6FF] lg:border-r-8 lg:bg-zinc-700':'hover:bg-zinc-700 text-[#b0bec5]'}  flex justify-center transition-all duration-300 ease-in-out lg:justify-start items-center gap-2 lg:px-6 p-1 rounded-md`}>
+          <div className=" block content-center size-9 xl:size-11 p-1 transition-(w) duration-200 ease-in-out">
             {name==='Dashboard' && (path==='/'?<HomeFill/>:<Home/>)}
             {name==='Explore' && (path===pathname?<GlobeFill/>:<Globe/>)}
             {name==='Create' && <CreatePost/>}
@@ -24,7 +24,7 @@ const SidebarBtn = ({pathname,name}:{pathname: string, name: string}) => {
               </div>
             )}
           </div>
-          <div className={`hidden lg:flex ${path===pathname?'':'text-[#b0bec5]'} items-center`}>{name}</div>
+          <div className={`hidden lg:flex xl:text-xl ${path===pathname?'':'text-[#b0bec5]'} items-center`}>{name}</div>
         </Link>
     </>
   )

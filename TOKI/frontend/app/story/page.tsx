@@ -216,8 +216,8 @@ export default function Page() {
         onClick={()=>setShow(!show)}
       >{show ?'close':'Add'}</motion.div>
 
-      <MusicSelect reg={15} onSelect={handleTrackSelect}/>
 
+      
       <AnimatePresence mode='popLayout'>
         
         {show && 
@@ -228,6 +228,14 @@ export default function Page() {
             exit={{x: -300}}
             className='sm:hidden block top-0 left-0 z-1000 absolute bg-[#1a1e23] p-5 border-[#3e4a57] border-1 rounded-2xl w-[86%] h-full overflow-y-auto'
           >
+            <MusicSelect reg={15} onSelect={handleTrackSelect}/>
+            {Track && <div className='text-sm'>
+              <div className='flex gap-2'>
+                song: {Track.title} by {Track.artist} 
+                <div className='drop-shadow-blue-400/80 drop-shadow-xl fill-indigo-500'><ScaleLoader margin={1} height={20} width={3} radius={50} color='#2EF6FF' speedMultiplier={1.5}/></div>
+              </div>
+              <div className='bg-red-500 mb-3 px-2 py-1 rounded-md w-16' onClick={()=>setTrack(undefined)}>remove</div>
+            </div>}
             <div className="space-y-3">
               <input
                 type="text"
@@ -421,6 +429,7 @@ export default function Page() {
             exit={{x: -300}}
             className='hidden sm:block p-5 w-1/2 h-full overflow-y-auto'
           >
+            <MusicSelect reg={15} onSelect={handleTrackSelect}/>
             {Track && <div className='text-sm'>
               <div className='flex gap-2'>
                 song: {Track.title} by {Track.artist} 
